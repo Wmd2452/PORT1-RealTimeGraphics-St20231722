@@ -1,0 +1,13 @@
+# Blender 4.0.2 MTL File: 'ToriiGateModel.blend'
+# www.blender.org
+
+newmtl Material.001
+Ns 263.822296
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd D:/3DS Max/3DS Max Models/3D_Modelling_Port1-main/St20231722 PORT1 Files/Asset Files/Models/Torri Gate Modelling And Notes/Textures and Maps/Diffuse/ToriiGateModel_DiffuseMap.tif
+map_Bump -bm 1.900000 D:/3DS Max/3DS Max Models/3D_Modelling_Port1-main/St20231722 PORT1 Files/Asset Files/Models/Torri Gate Modelling And Notes/Textures and Maps/Normal/ToriiGateModel_NormalMap.tif
