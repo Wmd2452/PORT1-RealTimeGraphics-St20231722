@@ -120,10 +120,19 @@ GLint				nMapDirLightShader_lightDirection;
 GLint				nMapDirLightShader_lightColour;
 
 // Torii Gate Pos
-vec3 toriiGatePos = vec3(-10.0f, 5.0f, 12.0f);
+vec3 toriiGatePos = vec3(0.0f, 0.0f, 0.0f);
 
 //Cylinder Pos
-vec3 cylinderPos = vec3(-10.0f, 5.0f, 12.0f);
+vec3 cylinderPos = vec3(-15.0f, 5.0f, 12.0f);
+
+//Lamp Pos
+vec3 lampPos = vec3(15.0f, 5.0f, 10.0f);
+
+//Katana Pos
+vec3 katanaPos = vec3(30.0f, 10.0f, 20.0f);
+
+//Pagoda Pos
+vec3 pagodaPos = vec3(-100.0f, 20.0f, 30.0f);
 
 // beast model
 vec3 beastPos = vec3(2.0f, 0.0f, 0.0f);
@@ -454,7 +463,7 @@ int main() {
 // renderScene - function to render the current scene
 void renderScene()
 {
-	renderHouse();
+	//renderHouse();
 	renderLamp();
 	renderKatana();
 	renderToriiGate();
@@ -499,18 +508,19 @@ void renderHouse() {
 void renderLamp() {
 
 	// Clear the rendering window
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Get camera matrices
 	mat4 cameraProjection = mainCamera->projectionTransform();
 	mat4 cameraView = mainCamera->viewTransform();
 
 	// Setup complete transform matrix - the modelling transform scales the house down a bit
-	mat4 mvpMatrix = cameraProjection * cameraView * glm::scale(identity<mat4>(), vec3(0.5f));
+	mat4 translateMatrix = cameraProjection * cameraView * glm::translate(identity<mat4>(), lampPos);
 
+	mat4 mvpMatrix = translateMatrix * glm::scale(identity<mat4>(), vec3(4.0f));
 	// Setup renderer to draw wireframe
-	//glDisable(GL_CULL_FACE);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glDisable(GL_CULL_FACE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	// Use (very) basic shader and set mvpMatrux uniform variable
 	glUseProgram(basicShader);
@@ -538,7 +548,10 @@ void renderKatana() {
 	mat4 cameraView = mainCamera->viewTransform();
 
 	// Setup complete transform matrix - the modelling transform scales the house down a bit
-	mat4 mvpMatrix = cameraProjection * cameraView * glm::scale(identity<mat4>(), vec3(0.1f));
+
+	mat4 translateMatrix = cameraProjection * cameraView * glm::translate(identity<mat4>(), katanaPos);
+
+	mat4 mvpMatrix = translateMatrix * glm::scale(identity<mat4>(), vec3(4.0f));
 
 	// Setup renderer to draw wireframe
 	//glDisable(GL_CULL_FACE);
@@ -586,8 +599,8 @@ void renderToriiGate() {
 	}
 
 	// Restore fixed-function pipeline
-	glUseProgram(0);
-	glBindVertexArray(0);
+	//glUseProgram(0);
+	//glBindVertexArray(0);
 
 }
 
@@ -602,7 +615,7 @@ void renderPagoda() {
 
 	//Use Matrices to scale up the torii gate model and to chaneg its position in world space so that it wont overlap with other objects in the scene
 
-	mat4 translateMatrix = cameraProjection * cameraView * glm::translate(identity<mat4>(), toriiGatePos);
+	mat4 translateMatrix = cameraProjection * cameraView * glm::translate(identity<mat4>(), pagodaPos);
 
 	mat4 mvpMatrix = translateMatrix * glm::scale(identity<mat4>(), vec3(4.0f));
 
