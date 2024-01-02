@@ -147,7 +147,11 @@ vector<AIMesh*> houseModel = vector<AIMesh*>();
 
 vector<AIMesh*> lampModel = vector<AIMesh*>();
 
+vector<AIMesh*> katanaModel = vector<AIMesh*>();
+
 vector<AIMesh*> toriiModel = vector<AIMesh*>();
+
+vector<AIMesh*> pagodaModel = vector<AIMesh*>();
 
 #pragma endregion
 
@@ -156,7 +160,9 @@ vector<AIMesh*> toriiModel = vector<AIMesh*>();
 void renderScene();
 void renderHouse();
 void renderLamp();
+void renderKatana();
 void renderToriiGate();
+void renderPagoda();
 void renderWithDirectionalLight();
 void renderWithPointLight();
 void renderWithMultipleLights();
@@ -362,12 +368,58 @@ int main() {
 			for (int i = 0; i < lampScene->mNumMeshes; i++) {
 
 				cout << "Loading Lamp sub-mesh " << i << endl;
-				toriiModel.push_back(new AIMesh(lampScene, i));
+				lampModel.push_back(new AIMesh(lampScene, i));
 			}
 		}
 	}
 
-	
+	//Setup Katana Model
+	string katanaFilename = string("Assets\\katana-model\\KatanaModel.obj");
+	const struct aiScene* katanaScene = aiImportFile(katanaFilename.c_str(),
+		aiProcess_GenSmoothNormals |
+		aiProcess_CalcTangentSpace |
+		aiProcess_Triangulate |
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_SortByPType);
+
+	if (katanaScene) {
+
+		cout << "Katana model: " << katanaFilename << " has " << katanaScene->mNumMeshes << " meshe(s)\n";
+
+		if (katanaScene->mNumMeshes > 0) {
+
+			// For each sub-mesh, setup a new AIMesh instance in the houseModel array
+			for (int i = 0; i < katanaScene->mNumMeshes; i++) {
+
+				cout << "Loading Katana sub-mesh " << i << endl;
+				katanaModel.push_back(new AIMesh(katanaScene, i));
+			}
+		}
+	}
+
+	//Setup Pagoda Model
+	string pagodaFilename = string("Assets\\pagoda-model\\PagodaModel.obj");
+	const struct aiScene* pagodaScene = aiImportFile(pagodaFilename.c_str(),
+		aiProcess_GenSmoothNormals |
+		aiProcess_CalcTangentSpace |
+		aiProcess_Triangulate |
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_SortByPType);
+
+	if (pagodaScene) {
+
+		cout << "Pagoda model: " << pagodaFilename << " has " << pagodaScene->mNumMeshes << " meshe(s)\n";
+
+		if (pagodaScene->mNumMeshes > 0) {
+
+			// For each sub-mesh, setup a new AIMesh instance in the houseModel array
+			for (int i = 0; i < pagodaScene->mNumMeshes; i++) {
+
+				cout << "Loading pagoda sub-mesh " << i << endl;
+				pagodaModel.push_back(new AIMesh(pagodaScene, i));
+			}
+		}
+	}
 	
 	//
 	// 2. Main loop
@@ -404,7 +456,9 @@ void renderScene()
 {
 	renderHouse();
 	renderLamp();
+	renderKatana();
 	renderToriiGate();
+	renderPagoda();
 	//renderWithDirectionalLight();
 	//renderWithPointLight();
 	//renderWithMultipleLights();
@@ -452,11 +506,11 @@ void renderLamp() {
 	mat4 cameraView = mainCamera->viewTransform();
 
 	// Setup complete transform matrix - the modelling transform scales the house down a bit
-	mat4 mvpMatrix = cameraProjection * cameraView * glm::scale(identity<mat4>(), vec3(0.1f));
+	mat4 mvpMatrix = cameraProjection * cameraView * glm::scale(identity<mat4>(), vec3(0.5f));
 
 	// Setup renderer to draw wireframe
-	glDisable(GL_CULL_FACE);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glDisable(GL_CULL_FACE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	// Use (very) basic shader and set mvpMatrux uniform variable
 	glUseProgram(basicShader);
@@ -464,6 +518,38 @@ void renderLamp() {
 
 	// Loop through array of meshes and render each one
 	for (AIMesh* mesh : lampModel) {
+
+		mesh->render();
+	}
+
+	// Restore fixed-function pipeline
+	//glUseProgram(0);
+	//glBindVertexArray(0);
+
+}
+
+void renderKatana() {
+
+	// Clear the rendering window
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Get camera matrices
+	mat4 cameraProjection = mainCamera->projectionTransform();
+	mat4 cameraView = mainCamera->viewTransform();
+
+	// Setup complete transform matrix - the modelling transform scales the house down a bit
+	mat4 mvpMatrix = cameraProjection * cameraView * glm::scale(identity<mat4>(), vec3(0.1f));
+
+	// Setup renderer to draw wireframe
+	//glDisable(GL_CULL_FACE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	// Use (very) basic shader and set mvpMatrux uniform variable
+	glUseProgram(basicShader);
+	glUniformMatrix4fv(basicShader_mvpMatrix, 1, GL_FALSE, (GLfloat*)&mvpMatrix);
+
+	// Loop through array of meshes and render each one
+	for (AIMesh* mesh : katanaModel) {
 
 		mesh->render();
 	}
@@ -495,6 +581,37 @@ void renderToriiGate() {
 
 	// Loop through array of meshes and render each one
 	for (AIMesh* mesh : toriiModel) {
+
+		mesh->render();
+	}
+
+	// Restore fixed-function pipeline
+	glUseProgram(0);
+	glBindVertexArray(0);
+
+}
+
+void renderPagoda() {
+
+	// Clear the rendering window
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Get camera matrices
+	mat4 cameraProjection = mainCamera->projectionTransform();
+	mat4 cameraView = mainCamera->viewTransform();
+
+	//Use Matrices to scale up the torii gate model and to chaneg its position in world space so that it wont overlap with other objects in the scene
+
+	mat4 translateMatrix = cameraProjection * cameraView * glm::translate(identity<mat4>(), toriiGatePos);
+
+	mat4 mvpMatrix = translateMatrix * glm::scale(identity<mat4>(), vec3(4.0f));
+
+	// Use (very) basic shader and set mvpMatrux uniform variable
+	glUseProgram(basicShader);
+	glUniformMatrix4fv(basicShader_mvpMatrix, 1, GL_FALSE, (GLfloat*)&mvpMatrix);
+
+	// Loop through array of meshes and render each one
+	for (AIMesh* mesh : pagodaModel) {
 
 		mesh->render();
 	}
