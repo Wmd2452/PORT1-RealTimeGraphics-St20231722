@@ -119,8 +119,11 @@ GLint				nMapDirLightShader_normalMapTexture;
 GLint				nMapDirLightShader_lightDirection;
 GLint				nMapDirLightShader_lightColour;
 
-// cylinder model
-vec3 cylinderPos = vec3(-2.0f, 2.0f, 0.0f);
+// Torii Gate Pos
+vec3 toriiGatePos = vec3(-10.0f, 5.0f, 12.0f);
+
+//Cylinder Pos
+vec3 cylinderPos = vec3(-10.0f, 5.0f, 12.0f);
 
 // beast model
 vec3 beastPos = vec3(2.0f, 0.0f, 0.0f);
@@ -142,6 +145,8 @@ bool rotateDirectionalLight = true;
 // House single / multi-mesh example
 vector<AIMesh*> houseModel = vector<AIMesh*>();
 
+vector<AIMesh*> lampModel = vector<AIMesh*>();
+
 vector<AIMesh*> toriiModel = vector<AIMesh*>();
 
 #pragma endregion
@@ -150,6 +155,7 @@ vector<AIMesh*> toriiModel = vector<AIMesh*>();
 // Function prototypes
 void renderScene();
 void renderHouse();
+void renderLamp();
 void renderToriiGate();
 void renderWithDirectionalLight();
 void renderWithPointLight();
@@ -311,6 +317,8 @@ int main() {
 		}
 	}
 
+	//Setup Torii Gate Model
+
 	string toriiFilename = string("Assets\\torii-gate\\ToriiGateModel.obj");
 	const struct aiScene* toriiScene = aiImportFile(toriiFilename.c_str(),
 		aiProcess_GenSmoothNormals |
@@ -330,6 +338,31 @@ int main() {
 
 				cout << "Loading Torii Gate sub-mesh " << i << endl;
 				toriiModel.push_back(new AIMesh(toriiScene, i));
+			}
+		}
+	}
+
+	//Setup Lamp Model
+
+	string lampFilename = string("Assets\\lamp-model\\LampModel.obj");
+	const struct aiScene* lampScene = aiImportFile(lampFilename.c_str(),
+		aiProcess_GenSmoothNormals |
+		aiProcess_CalcTangentSpace |
+		aiProcess_Triangulate |
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_SortByPType);
+
+	if (toriiScene) {
+
+		cout << "Lamp model: " << lampFilename << " has " << lampScene->mNumMeshes << " meshe(s)\n";
+
+		if (lampScene->mNumMeshes > 0) {
+
+			// For each sub-mesh, setup a new AIMesh instance in the houseModel array
+			for (int i = 0; i < lampScene->mNumMeshes; i++) {
+
+				cout << "Loading Lamp sub-mesh " << i << endl;
+				toriiModel.push_back(new AIMesh(lampScene, i));
 			}
 		}
 	}
@@ -369,7 +402,8 @@ int main() {
 // renderScene - function to render the current scene
 void renderScene()
 {
-	//renderHouse();
+	renderHouse();
+	renderLamp();
 	renderToriiGate();
 	//renderWithDirectionalLight();
 	//renderWithPointLight();
@@ -403,24 +437,57 @@ void renderHouse() {
 	}
 
 	// Restore fixed-function pipeline
-	glUseProgram(0);
-	glBindVertexArray(0);
+	//glUseProgram(0);
+	//glBindVertexArray(0);
 
 }
 
-void renderToriiGate() {
+void renderLamp() {
 
 	// Clear the rendering window
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Get camera matrices
 	mat4 cameraProjection = mainCamera->projectionTransform();
 	mat4 cameraView = mainCamera->viewTransform();
 
 	// Setup complete transform matrix - the modelling transform scales the house down a bit
-	mat4 mvpMatrix = cameraProjection * cameraView * glm::scale(identity<mat4>(), vec3(4.0f));
+	mat4 mvpMatrix = cameraProjection * cameraView * glm::scale(identity<mat4>(), vec3(0.1f));
 
+	// Setup renderer to draw wireframe
+	glDisable(GL_CULL_FACE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+	// Use (very) basic shader and set mvpMatrux uniform variable
+	glUseProgram(basicShader);
+	glUniformMatrix4fv(basicShader_mvpMatrix, 1, GL_FALSE, (GLfloat*)&mvpMatrix);
+
+	// Loop through array of meshes and render each one
+	for (AIMesh* mesh : lampModel) {
+
+		mesh->render();
+	}
+
+	// Restore fixed-function pipeline
+	//glUseProgram(0);
+	//glBindVertexArray(0);
+
+}
+
+void renderToriiGate() {
+
+	// Clear the rendering window
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Get camera matrices
+	mat4 cameraProjection = mainCamera->projectionTransform();
+	mat4 cameraView = mainCamera->viewTransform();
+
+	//Use Matrices to scale up the torii gate model and to chaneg its position in world space so that it wont overlap with other objects in the scene
+
+	mat4 translateMatrix  = cameraProjection * cameraView * glm::translate(identity<mat4>(), toriiGatePos);
+
+	mat4 mvpMatrix = translateMatrix * glm::scale(identity<mat4>(), vec3(4.0f));
 
 	// Use (very) basic shader and set mvpMatrux uniform variable
 	glUseProgram(basicShader);

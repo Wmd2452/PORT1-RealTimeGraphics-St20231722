@@ -1,0 +1,13 @@
+# Blender 4.0.2 MTL File: 'TerrainModel.blend'
+# www.blender.org
+
+newmtl Material.001
+Ns 9.111576
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Terrain Modelling and Notes/Textures And Maps/Diffuse/TerrainModel_DiffuseMap.tif
+map_Bump -bm 6.000000 D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Terrain Modelling and Notes/Textures And Maps/Normal/TerrainModel_NormalMap.tif
