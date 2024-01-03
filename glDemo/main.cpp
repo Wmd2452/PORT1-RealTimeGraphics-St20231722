@@ -15,7 +15,7 @@
  Sort out the scale and placement of objects in the scene too speradic and all over thje place atm while im testing them tidy up before submission
 
 
-
+ Figue out how to import textures from the pagoda and lamp models to conveine into one cohesive pattern.
 
 
 
@@ -97,9 +97,6 @@ bool				rotateRightPressed;
 AIMesh*				groundMesh = nullptr;
 AIMesh*				creatureMesh = nullptr;
 AIMesh*				columnMesh = nullptr;
-AIMesh*             houseMesh = nullptr;
-AIMesh*             katanaMesh = nullptr;
-AIMesh*              toriiMesh = nullptr;
 Cylinder*			cylinderMesh = nullptr;
 
 
@@ -174,9 +171,8 @@ PointLight lights[1] = {
 bool rotateDirectionalLight = true;
 
 
-// House single / multi-mesh example
+// Multi Mesh Models
 vector<AIMesh*> houseModel = vector<AIMesh*>();
-
 vector<AIMesh*> katanaModel = vector<AIMesh*>();
 vector<AIMesh*> toriiModel = vector<AIMesh*>();
 
@@ -287,32 +283,6 @@ int main() {
 		columnMesh->addNormalMap(string("Assets\\column\\column_n.bmp"), FIF_BMP);
 	}
 
-
-
-	// Setup Textures VBOs and other scene objects for my models
-
-
-	//House
-	houseMesh = new AIMesh(string("Assets\\House\\House_Multi.obj"));
-	if (houseMesh) {
-		houseMesh->addTexture(string("Assets\\column\\column_d.bmp"), FIF_BMP);
-		houseMesh->addNormalMap(string("Assets\\column\\column_n.bmp"), FIF_BMP);
-	}
-
-	//Katana
-	katanaMesh = new AIMesh(string("Assets\\katana-model\\KatanaModel.obj"));
-	if (katanaMesh) {
-		katanaMesh->addTexture(string("Assets\\column\\column_d.bmp"), FIF_BMP);
-		katanaMesh->addNormalMap(string("Assets\\column\\column_n.bmp"), FIF_BMP);
-	}
-	
-	//Torii Gate
-	toriiMesh = new AIMesh(string("Assets\\torii-gate\\ToriiGateModel.obj"));
-	if (toriiMesh) {
-		toriiMesh->addTexture(string("Assets\\torii-gate\\ToriiGateModel_DiffuseMap.bmp"), FIF_BMP);
-		toriiMesh->addNormalMap(string("Assets\\torii-gate\\ToriiGateModel_NormalMap.bmp"), FIF_BMP);
-	}
-
 	cylinderMesh = new Cylinder(string("Assets\\cylinder\\cylinderT.obj"));
 	
 
@@ -349,9 +319,19 @@ int main() {
 	nMapDirLightShader_lightColour = glGetUniformLocation(nMapDirLightShader, "lightColour");
 
 
-	//
-	// House example
-	//
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+	//////////////////////////////////////////////////////////////////
+	//                                                              //
+	//      Setting Up and importing models and texture maps        //
+	//                                                              //
+	//////////////////////////////////////////////////////////////////
+
+
+
 	string houseFilename = string("Assets\\House\\House_Multi.obj");
 	const struct aiScene* houseScene = aiImportFile(houseFilename.c_str(),
 		aiProcess_GenSmoothNormals |
@@ -431,6 +411,8 @@ int main() {
 		}
 	}
 
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	/*
 
 	if (houseScene) {
@@ -470,9 +452,14 @@ int main() {
 
 
 	
-	//
-	// 2. Main loop
-	// 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+
+	//////////////////////////////////////////////////////////////////
+	//                                                              //
+	//                          Main Loop                           //
+	//                                                              //
+	//////////////////////////////////////////////////////////////////
 
 	while (!glfwWindowShouldClose(window)) {
 
@@ -497,10 +484,18 @@ int main() {
 	}
 
 	return 0;
-}
+}   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-// renderScene - function to render the current scene
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	//////////////////////////////////////////////////////////////////
+	//                                                              //
+	//                Rendering The Desired Scene                   //
+	//                                                              //
+	//////////////////////////////////////////////////////////////////
+
+
 void renderScene()
 {
 	//renderHouse();
@@ -510,6 +505,10 @@ void renderScene()
 	//renderWithPointLight();
 	//renderWithMultipleLights();
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 /*
 void renderHouse() {
 
@@ -602,12 +601,33 @@ void renderToriiGate() {
 	glUseProgram(0);
 	glBindVertexArray(0);
 
+
 }
 */
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Demonstrate the use of a single directional light source
 //  *** normal mapping ***  - since we're demonstrating the use of normal mapping with a directional light,
 // the normal mapped objects are rendered here also!
+
+
+
+
+
+
+	//////////////////////////////////////////////////////////////////
+	//                                                              //
+	//              Rendering With Directional Light                //
+	//                                                              //
+	//////////////////////////////////////////////////////////////////
+
+
+
+
+
 void renderWithDirectionalLight() {
 
 	// Clear the rendering window
@@ -678,7 +698,10 @@ void renderWithDirectionalLight() {
 
 	// Render houseMesh (follows same pattern / code structure as other objects)
 	
-	if (houseMesh) {
+
+	int test = 1;
+
+	if (test == 1) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(), vec3(housePos)) * glm::scale(identity<mat4>(), vec3(0.01f, 0.01f, 0.01f));
 
@@ -694,7 +717,7 @@ void renderWithDirectionalLight() {
 	
 
 	//Render katanaMesh
-	if (katanaMesh) {
+	if (test == 1) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(), vec3(katanaPos)) * glm::scale(identity<mat4>(), vec3(5.01f, 5.01f, 5.01f));
 
@@ -707,9 +730,9 @@ void renderWithDirectionalLight() {
 		}
 	}
 	
-
 	//Render toriiMesh
-	if (toriiMesh) {
+
+	if (test == 1) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(), vec3(toriiGatePos)) * glm::scale(identity<mat4>(), vec3(5.01f, 5.01f, 5.01f));
 
@@ -721,7 +744,7 @@ void renderWithDirectionalLight() {
 			mesh->render();
 		}
 	}
-	
+
 
 #pragma endregion
 
@@ -740,6 +763,19 @@ void renderWithDirectionalLight() {
 		cylinderMesh->setupTextures();
 		cylinderMesh->render(T);
 	}
+
+	//Testing Rendering a transparent Object Effect
+	if (test) {
+
+		mat4 T = cameraProjection * cameraView * glm::translate(identity<mat4>(), cylinderPos);
+
+		for (AIMesh* mesh : toriiModel)
+		{
+			mesh->setupTextures();
+			mesh->render();
+		}
+	}
+
 
 	glDisable(GL_BLEND);
 
@@ -764,6 +800,9 @@ void renderWithDirectionalLight() {
 	glVertex3f(directLight.direction.x * 10.0f, directLight.direction.y * 10.0f, directLight.direction.z * 10.0f);
 	glEnd();
 }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 
 // Demonstrate the use of a single point light source
