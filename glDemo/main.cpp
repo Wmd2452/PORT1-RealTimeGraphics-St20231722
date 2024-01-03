@@ -79,6 +79,8 @@ bool				rotateRightPressed;
 AIMesh*				groundMesh = nullptr;
 AIMesh*				creatureMesh = nullptr;
 AIMesh*				columnMesh = nullptr;
+AIMesh*             houseMesh = nullptr;
+AIMesh*             katanaMesh = nullptr;
 Cylinder*			cylinderMesh = nullptr;
 
 
@@ -119,20 +121,22 @@ GLint				nMapDirLightShader_normalMapTexture;
 GLint				nMapDirLightShader_lightDirection;
 GLint				nMapDirLightShader_lightColour;
 
+// cylinder model
+vec3 cylinderPos = vec3(-2.0f, 2.0f, 0.0f);
+
 // Torii Gate Pos
 vec3 toriiGatePos = vec3(0.0f, 0.0f, 0.0f);
-
-//Cylinder Pos
-vec3 cylinderPos = vec3(-15.0f, 5.0f, 12.0f);
 
 //Lamp Pos
 vec3 lampPos = vec3(15.0f, 5.0f, 10.0f);
 
 //Katana Pos
-vec3 katanaPos = vec3(30.0f, 10.0f, 20.0f);
+vec3 katanaPos = vec3(0.0f, 0.0f, 0.0f);
 
 //Pagoda Pos
 vec3 pagodaPos = vec3(-100.0f, 20.0f, 30.0f);
+
+vec3 housePos = vec3(-100.0f, 20.0f, 30.0f);
 
 // beast model
 vec3 beastPos = vec3(2.0f, 0.0f, 0.0f);
@@ -154,13 +158,8 @@ bool rotateDirectionalLight = true;
 // House single / multi-mesh example
 vector<AIMesh*> houseModel = vector<AIMesh*>();
 
-vector<AIMesh*> lampModel = vector<AIMesh*>();
-
 vector<AIMesh*> katanaModel = vector<AIMesh*>();
 
-vector<AIMesh*> toriiModel = vector<AIMesh*>();
-
-vector<AIMesh*> pagodaModel = vector<AIMesh*>();
 
 #pragma endregion
 
@@ -168,10 +167,10 @@ vector<AIMesh*> pagodaModel = vector<AIMesh*>();
 // Function prototypes
 void renderScene();
 void renderHouse();
-void renderLamp();
+//void renderLamp();
 void renderKatana();
-void renderToriiGate();
-void renderPagoda();
+//void renderToriiGate();
+//void renderPagoda();
 void renderWithDirectionalLight();
 void renderWithPointLight();
 void renderWithMultipleLights();
@@ -269,6 +268,18 @@ int main() {
 		columnMesh->addNormalMap(string("Assets\\column\\column_n.bmp"), FIF_BMP);
 	}
 
+	houseMesh = new AIMesh(string("Assets\\katana-model\\KatanaModel.obj"));
+	if (houseMesh) {
+		houseMesh->addTexture(string("Assets\\column\\column_d.bmp"), FIF_BMP);
+		houseMesh->addNormalMap(string("Assets\\column\\column_n.bmp"), FIF_BMP);
+	}
+
+	katanaMesh = new AIMesh(string("Assets\\katana-model\\KatanaModel.obj"));
+	if (katanaMesh) {
+		katanaMesh->addTexture(string("Assets\\column\\column_d.bmp"), FIF_BMP);
+		katanaMesh->addNormalMap(string("Assets\\column\\column_n.bmp"), FIF_BMP);
+	}
+
 	cylinderMesh = new Cylinder(string("Assets\\cylinder\\cylinderT.obj"));
 	
 
@@ -308,7 +319,6 @@ int main() {
 	//
 	// House example
 	//
-
 	string houseFilename = string("Assets\\House\\House_Multi.obj");
 	const struct aiScene* houseScene = aiImportFile(houseFilename.c_str(),
 		aiProcess_GenSmoothNormals |
@@ -328,61 +338,13 @@ int main() {
 
 				cout << "Loading house sub-mesh " << i << endl;
 				houseModel.push_back(new AIMesh(houseScene, i));
+				houseModel[i]->addTexture(string("Assets\\column\\column_d.bmp"), FIF_BMP);
+				houseModel[i]->addNormalMap(string("Assets\\column\\column_n.bmp"), FIF_BMP);
 			}
 		}
 	}
 
-	//Setup Torii Gate Model
 
-	string toriiFilename = string("Assets\\torii-gate\\ToriiGateModel.obj");
-	const struct aiScene* toriiScene = aiImportFile(toriiFilename.c_str(),
-		aiProcess_GenSmoothNormals |
-		aiProcess_CalcTangentSpace |
-		aiProcess_Triangulate |
-		aiProcess_JoinIdenticalVertices |
-		aiProcess_SortByPType);
-
-	if (toriiScene) {
-
-		cout << "Torii Gate model: " << toriiFilename << " has " << toriiScene->mNumMeshes << " meshe(s)\n";
-
-		if (toriiScene->mNumMeshes > 0) {
-
-			// For each sub-mesh, setup a new AIMesh instance in the houseModel array
-			for (int i = 0; i < toriiScene->mNumMeshes; i++) {
-
-				cout << "Loading Torii Gate sub-mesh " << i << endl;
-				toriiModel.push_back(new AIMesh(toriiScene, i));
-			}
-		}
-	}
-
-	//Setup Lamp Model
-
-	string lampFilename = string("Assets\\lamp-model\\LampModel.obj");
-	const struct aiScene* lampScene = aiImportFile(lampFilename.c_str(),
-		aiProcess_GenSmoothNormals |
-		aiProcess_CalcTangentSpace |
-		aiProcess_Triangulate |
-		aiProcess_JoinIdenticalVertices |
-		aiProcess_SortByPType);
-
-	if (toriiScene) {
-
-		cout << "Lamp model: " << lampFilename << " has " << lampScene->mNumMeshes << " meshe(s)\n";
-
-		if (lampScene->mNumMeshes > 0) {
-
-			// For each sub-mesh, setup a new AIMesh instance in the houseModel array
-			for (int i = 0; i < lampScene->mNumMeshes; i++) {
-
-				cout << "Loading Lamp sub-mesh " << i << endl;
-				lampModel.push_back(new AIMesh(lampScene, i));
-			}
-		}
-	}
-
-	//Setup Katana Model
 	string katanaFilename = string("Assets\\katana-model\\KatanaModel.obj");
 	const struct aiScene* katanaScene = aiImportFile(katanaFilename.c_str(),
 		aiProcess_GenSmoothNormals |
@@ -390,6 +352,7 @@ int main() {
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices |
 		aiProcess_SortByPType);
+
 
 	if (katanaScene) {
 
@@ -400,35 +363,67 @@ int main() {
 			// For each sub-mesh, setup a new AIMesh instance in the houseModel array
 			for (int i = 0; i < katanaScene->mNumMeshes; i++) {
 
-				cout << "Loading Katana sub-mesh " << i << endl;
+				cout << "Loading house sub-mesh " << i << endl;
 				katanaModel.push_back(new AIMesh(katanaScene, i));
+				katanaModel[i]->addTexture(string("Assets\\katana-model\\KatanaModel_DiffuseMap.bmp"), FIF_BMP);
+				katanaModel[i]->addNormalMap(string("Assets\\katana-model\\KatanaModel_NormalMap"), FIF_BMP);
 			}
 		}
 	}
+	/*
+	if (houseScene) {
 
-	//Setup Pagoda Model
-	string pagodaFilename = string("Assets\\pagoda-model\\PagodaModel.obj");
-	const struct aiScene* pagodaScene = aiImportFile(pagodaFilename.c_str(),
-		aiProcess_GenSmoothNormals |
-		aiProcess_CalcTangentSpace |
-		aiProcess_Triangulate |
-		aiProcess_JoinIdenticalVertices |
-		aiProcess_SortByPType);
+		cout << "House model: " << houseFilename << " has " << houseScene->mNumMeshes << " meshe(s)\n";
 
-	if (pagodaScene) {
-
-		cout << "Pagoda model: " << pagodaFilename << " has " << pagodaScene->mNumMeshes << " meshe(s)\n";
-
-		if (pagodaScene->mNumMeshes > 0) {
+		if (houseScene->mNumMeshes > 0) {
 
 			// For each sub-mesh, setup a new AIMesh instance in the houseModel array
-			for (int i = 0; i < pagodaScene->mNumMeshes; i++) {
+			for (int i = 0; i < houseScene->mNumMeshes; i++) {
 
-				cout << "Loading pagoda sub-mesh " << i << endl;
-				pagodaModel.push_back(new AIMesh(pagodaScene, i));
+				cout << "Loading house sub-mesh " << i << endl;
+				houseModel.push_back(new AIMesh(houseScene, i));
+				houseModel[i]->addTexture(string("Assets\\column\\column_d.bmp"), FIF_BMP);
+				houseModel[i]->addNormalMap(string("Assets\\column\\column_n.bmp"), FIF_BMP);
 			}
 		}
 	}
+
+	if (houseScene) {
+
+		cout << "House model: " << houseFilename << " has " << houseScene->mNumMeshes << " meshe(s)\n";
+
+		if (houseScene->mNumMeshes > 0) {
+
+			// For each sub-mesh, setup a new AIMesh instance in the houseModel array
+			for (int i = 0; i < houseScene->mNumMeshes; i++) {
+
+				cout << "Loading house sub-mesh " << i << endl;
+				houseModel.push_back(new AIMesh(houseScene, i));
+				houseModel[i]->addTexture(string("Assets\\column\\column_d.bmp"), FIF_BMP);
+				houseModel[i]->addNormalMap(string("Assets\\column\\column_n.bmp"), FIF_BMP);
+			}
+		}
+	}
+
+	if (houseScene) {
+
+		cout << "House model: " << houseFilename << " has " << houseScene->mNumMeshes << " meshe(s)\n";
+
+		if (houseScene->mNumMeshes > 0) {
+
+			// For each sub-mesh, setup a new AIMesh instance in the houseModel array
+			for (int i = 0; i < houseScene->mNumMeshes; i++) {
+
+				cout << "Loading house sub-mesh " << i << endl;
+				houseModel.push_back(new AIMesh(houseScene, i));
+				houseModel[i]->addTexture(string("Assets\\column\\column_d.bmp"), FIF_BMP);
+				houseModel[i]->addNormalMap(string("Assets\\column\\column_n.bmp"), FIF_BMP);
+			}
+		}
+	}
+	*/
+
+
 	
 	//
 	// 2. Main loop
@@ -464,15 +459,12 @@ int main() {
 void renderScene()
 {
 	//renderHouse();
-	renderLamp();
 	renderKatana();
-	renderToriiGate();
-	renderPagoda();
-	//renderWithDirectionalLight();
+	renderWithDirectionalLight();
 	//renderWithPointLight();
 	//renderWithMultipleLights();
 }
-
+/*
 void renderHouse() {
 
 	// Clear the rendering window
@@ -483,29 +475,28 @@ void renderHouse() {
 	mat4 cameraView = mainCamera->viewTransform();
 	
 	// Setup complete transform matrix - the modelling transform scales the house down a bit
-	mat4 mvpMatrix = cameraProjection * cameraView * glm::scale(identity<mat4>(), vec3(0.1f));
+	mat4 translateMatrix = cameraProjection * cameraView * glm::translate(identity<mat4>(), housePos);
 
+	mat4 mvpMatrix = translateMatrix * glm::scale(identity<mat4>(), vec3(10.0f));
 	// Setup renderer to draw wireframe
-	glDisable(GL_CULL_FACE);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glDisable(GL_CULL_FACE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	// Use (very) basic shader and set mvpMatrux uniform variable
 	glUseProgram(basicShader);
 	glUniformMatrix4fv(basicShader_mvpMatrix, 1, GL_FALSE, (GLfloat*)&mvpMatrix);
 
-	// Loop through array of meshes and render each one
-	for (AIMesh* mesh : houseModel) {
 
-		mesh->render();
-	}
+
+
 
 	// Restore fixed-function pipeline
 	//glUseProgram(0);
 	//glBindVertexArray(0);
 
 }
-
-void renderLamp() {
+*/
+void renderKatana() {
 
 	// Clear the rendering window
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -515,43 +506,10 @@ void renderLamp() {
 	mat4 cameraView = mainCamera->viewTransform();
 
 	// Setup complete transform matrix - the modelling transform scales the house down a bit
-	mat4 translateMatrix = cameraProjection * cameraView * glm::translate(identity<mat4>(), lampPos);
-
-	mat4 mvpMatrix = translateMatrix * glm::scale(identity<mat4>(), vec3(4.0f));
-	// Setup renderer to draw wireframe
-	glDisable(GL_CULL_FACE);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-	// Use (very) basic shader and set mvpMatrux uniform variable
-	glUseProgram(basicShader);
-	glUniformMatrix4fv(basicShader_mvpMatrix, 1, GL_FALSE, (GLfloat*)&mvpMatrix);
-
-	// Loop through array of meshes and render each one
-	for (AIMesh* mesh : lampModel) {
-
-		mesh->render();
-	}
-
-	// Restore fixed-function pipeline
-	//glUseProgram(0);
-	//glBindVertexArray(0);
-
-}
-
-void renderKatana() {
-
-	// Clear the rendering window
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// Get camera matrices
-	mat4 cameraProjection = mainCamera->projectionTransform();
-	mat4 cameraView = mainCamera->viewTransform();
-
-	// Setup complete transform matrix - the modelling transform scales the house down a bit
 
 	mat4 translateMatrix = cameraProjection * cameraView * glm::translate(identity<mat4>(), katanaPos);
 
-	mat4 mvpMatrix = translateMatrix * glm::scale(identity<mat4>(), vec3(4.0f));
+	mat4 mvpMatrix = translateMatrix * glm::scale(identity<mat4>(), vec3(10.0f));
 
 	// Setup renderer to draw wireframe
 	//glDisable(GL_CULL_FACE);
@@ -561,73 +519,7 @@ void renderKatana() {
 	glUseProgram(basicShader);
 	glUniformMatrix4fv(basicShader_mvpMatrix, 1, GL_FALSE, (GLfloat*)&mvpMatrix);
 
-	// Loop through array of meshes and render each one
-	for (AIMesh* mesh : katanaModel) {
 
-		mesh->render();
-	}
-
-	// Restore fixed-function pipeline
-	//glUseProgram(0);
-	//glBindVertexArray(0);
-
-}
-
-void renderToriiGate() {
-
-	// Clear the rendering window
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// Get camera matrices
-	mat4 cameraProjection = mainCamera->projectionTransform();
-	mat4 cameraView = mainCamera->viewTransform();
-
-	//Use Matrices to scale up the torii gate model and to chaneg its position in world space so that it wont overlap with other objects in the scene
-
-	mat4 translateMatrix  = cameraProjection * cameraView * glm::translate(identity<mat4>(), toriiGatePos);
-
-	mat4 mvpMatrix = translateMatrix * glm::scale(identity<mat4>(), vec3(4.0f));
-
-	// Use (very) basic shader and set mvpMatrux uniform variable
-	glUseProgram(basicShader);
-	glUniformMatrix4fv(basicShader_mvpMatrix, 1, GL_FALSE, (GLfloat*)&mvpMatrix);
-
-	// Loop through array of meshes and render each one
-	for (AIMesh* mesh : toriiModel) {
-
-		mesh->render();
-	}
-
-	// Restore fixed-function pipeline
-	//glUseProgram(0);
-	//glBindVertexArray(0);
-
-}
-
-void renderPagoda() {
-
-	// Clear the rendering window
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// Get camera matrices
-	mat4 cameraProjection = mainCamera->projectionTransform();
-	mat4 cameraView = mainCamera->viewTransform();
-
-	//Use Matrices to scale up the torii gate model and to chaneg its position in world space so that it wont overlap with other objects in the scene
-
-	mat4 translateMatrix = cameraProjection * cameraView * glm::translate(identity<mat4>(), pagodaPos);
-
-	mat4 mvpMatrix = translateMatrix * glm::scale(identity<mat4>(), vec3(4.0f));
-
-	// Use (very) basic shader and set mvpMatrux uniform variable
-	glUseProgram(basicShader);
-	glUniformMatrix4fv(basicShader_mvpMatrix, 1, GL_FALSE, (GLfloat*)&mvpMatrix);
-
-	// Loop through array of meshes and render each one
-	for (AIMesh* mesh : pagodaModel) {
-
-		mesh->render();
-	}
 
 	// Restore fixed-function pipeline
 	glUseProgram(0);
@@ -642,7 +534,7 @@ void renderPagoda() {
 void renderWithDirectionalLight() {
 
 	// Clear the rendering window
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Get camera matrices
 	mat4 cameraProjection = mainCamera->projectionTransform();
@@ -681,6 +573,8 @@ void renderWithDirectionalLight() {
 	}
 
 	// Render diffuse textured column (to compare with normal mapped version rendered below)...
+
+
 	if (columnMesh) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(), vec3(2.0f, 0.0f, 2.0f)) * glm::scale(identity<mat4>(), vec3(0.01f, 0.01f, 0.01f));
@@ -705,16 +599,38 @@ void renderWithDirectionalLight() {
 	glUniform3fv(nMapDirLightShader_lightDirection, 1, (GLfloat*)&(directLight.direction));
 	glUniform3fv(nMapDirLightShader_lightColour, 1, (GLfloat*)&(directLight.colour));
 
-	// Render columnMesh (follows same pattern / code structure as other objects)
-	if (columnMesh) {
+	// Render houseMesh (follows same pattern / code structure as other objects)
+	
+	if (houseMesh) {
 
-		mat4 modelTransform = glm::translate(identity<mat4>(), vec3(0.0f, 0.0f, 2.0f)) * glm::scale(identity<mat4>(), vec3(0.01f, 0.01f, 0.01f));
+		mat4 modelTransform = glm::translate(identity<mat4>(), vec3(housePos)) * glm::scale(identity<mat4>(), vec3(0.01f, 0.01f, 0.01f));
+
+		glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
+		
+		for (AIMesh* mesh : houseModel) 
+		{
+			mesh->setupTextures();
+			mesh->render();
+		}
+	
+	}
+	
+
+	//Render katanaMesh
+	if (katanaMesh) {
+
+		mat4 modelTransform = glm::translate(identity<mat4>(), vec3(katanaPos)) * glm::scale(identity<mat4>(), vec3(0.01f, 0.01f, 0.01f));
 
 		glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
 
-		columnMesh->setupTextures();
-		columnMesh->render();
+		for (AIMesh* mesh : katanaModel)
+		{
+			mesh->setupTextures();
+			mesh->render();
+		}
 	}
+
+	
 
 #pragma endregion
 
