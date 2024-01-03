@@ -8,6 +8,24 @@
 #include "Cylinder.h"
 
 
+/*
+ To Do List Delete Later!
+
+ Have The scale of objects assigned to a variable to increase readability
+ Sort out the scale and placement of objects in the scene too speradic and all over thje place atm while im testing them tidy up before submission
+
+
+
+
+
+
+
+
+
+
+
+
+*/
 using namespace std;
 using namespace glm;
 
@@ -81,6 +99,7 @@ AIMesh*				creatureMesh = nullptr;
 AIMesh*				columnMesh = nullptr;
 AIMesh*             houseMesh = nullptr;
 AIMesh*             katanaMesh = nullptr;
+AIMesh*              toriiMesh = nullptr;
 Cylinder*			cylinderMesh = nullptr;
 
 
@@ -159,16 +178,16 @@ bool rotateDirectionalLight = true;
 vector<AIMesh*> houseModel = vector<AIMesh*>();
 
 vector<AIMesh*> katanaModel = vector<AIMesh*>();
-
+vector<AIMesh*> toriiModel = vector<AIMesh*>();
 
 #pragma endregion
 
 
 // Function prototypes
 void renderScene();
-void renderHouse();
+//void renderHouse();
 //void renderLamp();
-void renderKatana();
+//void renderKatana();
 //void renderToriiGate();
 //void renderPagoda();
 void renderWithDirectionalLight();
@@ -268,16 +287,30 @@ int main() {
 		columnMesh->addNormalMap(string("Assets\\column\\column_n.bmp"), FIF_BMP);
 	}
 
-	houseMesh = new AIMesh(string("Assets\\katana-model\\KatanaModel.obj"));
+
+
+	// Setup Textures VBOs and other scene objects for my models
+
+
+	//House
+	houseMesh = new AIMesh(string("Assets\\House\\House_Multi.obj"));
 	if (houseMesh) {
 		houseMesh->addTexture(string("Assets\\column\\column_d.bmp"), FIF_BMP);
 		houseMesh->addNormalMap(string("Assets\\column\\column_n.bmp"), FIF_BMP);
 	}
 
+	//Katana
 	katanaMesh = new AIMesh(string("Assets\\katana-model\\KatanaModel.obj"));
 	if (katanaMesh) {
 		katanaMesh->addTexture(string("Assets\\column\\column_d.bmp"), FIF_BMP);
 		katanaMesh->addNormalMap(string("Assets\\column\\column_n.bmp"), FIF_BMP);
+	}
+	
+	//Torii Gate
+	toriiMesh = new AIMesh(string("Assets\\torii-gate\\ToriiGateModel.obj"));
+	if (toriiMesh) {
+		toriiMesh->addTexture(string("Assets\\torii-gate\\ToriiGateModel_DiffuseMap.bmp"), FIF_BMP);
+		toriiMesh->addNormalMap(string("Assets\\torii-gate\\ToriiGateModel_NormalMap.bmp"), FIF_BMP);
 	}
 
 	cylinderMesh = new Cylinder(string("Assets\\cylinder\\cylinderT.obj"));
@@ -363,30 +396,42 @@ int main() {
 			// For each sub-mesh, setup a new AIMesh instance in the houseModel array
 			for (int i = 0; i < katanaScene->mNumMeshes; i++) {
 
-				cout << "Loading house sub-mesh " << i << endl;
+				cout << "Loading Katana sub-mesh " << i << endl;
 				katanaModel.push_back(new AIMesh(katanaScene, i));
 				katanaModel[i]->addTexture(string("Assets\\katana-model\\KatanaModel_DiffuseMap.bmp"), FIF_BMP);
 				katanaModel[i]->addNormalMap(string("Assets\\katana-model\\KatanaModel_NormalMap"), FIF_BMP);
 			}
 		}
 	}
-	/*
-	if (houseScene) {
 
-		cout << "House model: " << houseFilename << " has " << houseScene->mNumMeshes << " meshe(s)\n";
+	
 
-		if (houseScene->mNumMeshes > 0) {
+	string toriiFilename = string("Assets\\torii-gate\\ToriiGateModel.obj");
+	const struct aiScene* toriiScene = aiImportFile(toriiFilename.c_str(),
+		aiProcess_GenSmoothNormals |
+		aiProcess_CalcTangentSpace |
+		aiProcess_Triangulate |
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_SortByPType);
+
+	if (toriiScene) {
+
+		cout << "Torii Gate Model: " << toriiFilename << " has " << toriiScene->mNumMeshes << " meshe(s)\n";
+
+		if (toriiScene->mNumMeshes > 0) {
 
 			// For each sub-mesh, setup a new AIMesh instance in the houseModel array
-			for (int i = 0; i < houseScene->mNumMeshes; i++) {
+			for (int i = 0; i < toriiScene->mNumMeshes; i++) {
 
-				cout << "Loading house sub-mesh " << i << endl;
-				houseModel.push_back(new AIMesh(houseScene, i));
-				houseModel[i]->addTexture(string("Assets\\column\\column_d.bmp"), FIF_BMP);
-				houseModel[i]->addNormalMap(string("Assets\\column\\column_n.bmp"), FIF_BMP);
+				cout << "Loading Torii Gate sub-mesh " << i << endl;
+				toriiModel.push_back(new AIMesh(toriiScene, i));
+				toriiModel[i]->addTexture(string("Assets\\torii-gate\\ToriiGateModel_DiffuseMap.bmp"), FIF_BMP);
+				toriiModel[i]->addNormalMap(string("Assets\\torii-gate\\ToriiGateModel_NormalMap.bmp"), FIF_BMP);
 			}
 		}
 	}
+
+	/*
 
 	if (houseScene) {
 
@@ -459,7 +504,8 @@ int main() {
 void renderScene()
 {
 	//renderHouse();
-	renderKatana();
+	//renderKatana();
+	//renderToriiGate();
 	renderWithDirectionalLight();
 	//renderWithPointLight();
 	//renderWithMultipleLights();
@@ -495,7 +541,7 @@ void renderHouse() {
 	//glBindVertexArray(0);
 
 }
-*/
+
 void renderKatana() {
 
 	// Clear the rendering window
@@ -527,6 +573,37 @@ void renderKatana() {
 
 }
 
+void renderToriiGate() {
+
+	// Clear the rendering window
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Get camera matrices
+	mat4 cameraProjection = mainCamera->projectionTransform();
+	mat4 cameraView = mainCamera->viewTransform();
+
+	// Setup complete transform matrix - the modelling transform scales the house down a bit
+
+	mat4 translateMatrix = cameraProjection * cameraView * glm::translate(identity<mat4>(), toriiGatePos);
+
+	mat4 mvpMatrix = translateMatrix * glm::scale(identity<mat4>(), vec3(10.0f));
+
+	// Setup renderer to draw wireframe
+	//glDisable(GL_CULL_FACE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	// Use (very) basic shader and set mvpMatrux uniform variable
+	glUseProgram(basicShader);
+	glUniformMatrix4fv(basicShader_mvpMatrix, 1, GL_FALSE, (GLfloat*)&mvpMatrix);
+
+
+
+	// Restore fixed-function pipeline
+	glUseProgram(0);
+	glBindVertexArray(0);
+
+}
+*/
 
 // Demonstrate the use of a single directional light source
 //  *** normal mapping ***  - since we're demonstrating the use of normal mapping with a directional light,
@@ -534,7 +611,7 @@ void renderKatana() {
 void renderWithDirectionalLight() {
 
 	// Clear the rendering window
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Get camera matrices
 	mat4 cameraProjection = mainCamera->projectionTransform();
@@ -619,7 +696,7 @@ void renderWithDirectionalLight() {
 	//Render katanaMesh
 	if (katanaMesh) {
 
-		mat4 modelTransform = glm::translate(identity<mat4>(), vec3(katanaPos)) * glm::scale(identity<mat4>(), vec3(0.01f, 0.01f, 0.01f));
+		mat4 modelTransform = glm::translate(identity<mat4>(), vec3(katanaPos)) * glm::scale(identity<mat4>(), vec3(5.01f, 5.01f, 5.01f));
 
 		glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
 
@@ -629,7 +706,21 @@ void renderWithDirectionalLight() {
 			mesh->render();
 		}
 	}
+	
 
+	//Render toriiMesh
+	if (toriiMesh) {
+
+		mat4 modelTransform = glm::translate(identity<mat4>(), vec3(toriiGatePos)) * glm::scale(identity<mat4>(), vec3(5.01f, 5.01f, 5.01f));
+
+		glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
+
+		for (AIMesh* mesh : toriiModel)
+		{
+			mesh->setupTextures();
+			mesh->render();
+		}
+	}
 	
 
 #pragma endregion
