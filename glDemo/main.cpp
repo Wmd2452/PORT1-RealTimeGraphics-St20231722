@@ -175,6 +175,8 @@ bool rotateDirectionalLight = true;
 vector<AIMesh*> houseModel = vector<AIMesh*>();
 vector<AIMesh*> katanaModel = vector<AIMesh*>();
 vector<AIMesh*> toriiModel = vector<AIMesh*>();
+vector<AIMesh*> pagodaModel = vector<AIMesh*>();
+vector<AIMesh*> lampModel = vector<AIMesh*>();
 
 #pragma endregion
 
@@ -400,7 +402,7 @@ int main() {
 
 		if (toriiScene->mNumMeshes > 0) {
 
-			// For each sub-mesh, setup a new AIMesh instance in the houseModel array
+			// For each sub-mesh, setup a new AIMesh instance in the toriiModel array
 			for (int i = 0; i < toriiScene->mNumMeshes; i++) {
 
 				cout << "Loading Torii Gate sub-mesh " << i << endl;
@@ -411,44 +413,63 @@ int main() {
 		}
 	}
 
+
+	//Pagoda
+	string pagodaFilename = string("Assets\\pagoda-model\\PagodaModel.obj");
+	const struct aiScene* pagodaScene = aiImportFile(pagodaFilename.c_str(),
+		aiProcess_GenSmoothNormals |
+		aiProcess_CalcTangentSpace |
+		aiProcess_Triangulate |
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_SortByPType);
+
+
+	if (pagodaScene) {
+
+		cout << "pagoda model: " << pagodaFilename << " has " << pagodaScene->mNumMeshes << " meshe(s)\n";
+
+		if (pagodaScene->mNumMeshes > 0) {
+
+			// For each sub-mesh, setup a new AIMesh instance in the pagodaModel array
+			for (int i = 0; i < pagodaScene->mNumMeshes; i++) {
+
+				cout << "Loading pagoda sub-mesh " << i << endl;
+				pagodaModel.push_back(new AIMesh(pagodaScene, i));
+				pagodaModel[i]->addTexture(string("Assets\\column\\column_d.bmp"), FIF_BMP);
+				pagodaModel[i]->addNormalMap(string("Assets\\column\\column_n.bmp"), FIF_BMP);
+			}
+		}
+	}
+
+
+	//Lamp
+	string lampFilename = string("Assets\\lamp-model\\LampModel.obj");
+	const struct aiScene* lampScene = aiImportFile(lampFilename.c_str(),
+		aiProcess_GenSmoothNormals |
+		aiProcess_CalcTangentSpace |
+		aiProcess_Triangulate |
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_SortByPType);
+
+
+	if (lampScene) {
+
+		cout << "Lamp model: " << lampFilename << " has " << lampScene->mNumMeshes << " meshe(s)\n";
+
+		if (lampScene->mNumMeshes > 0) {
+
+			// For each sub-mesh, setup a new AIMesh instance in the lampModel array
+			for (int i = 0; i < lampScene->mNumMeshes; i++) {
+
+				cout << "Loading Lamp sub-mesh " << i << endl;
+				lampModel.push_back(new AIMesh(lampScene, i));
+				lampModel[i]->addTexture(string("Assets\\column\\column_d.bmp"), FIF_BMP);
+				lampModel[i]->addNormalMap(string("Assets\\column\\column_n.bmp"), FIF_BMP);
+			}
+		}
+	}
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	/*
-
-	if (houseScene) {
-
-		cout << "House model: " << houseFilename << " has " << houseScene->mNumMeshes << " meshe(s)\n";
-
-		if (houseScene->mNumMeshes > 0) {
-
-			// For each sub-mesh, setup a new AIMesh instance in the houseModel array
-			for (int i = 0; i < houseScene->mNumMeshes; i++) {
-
-				cout << "Loading house sub-mesh " << i << endl;
-				houseModel.push_back(new AIMesh(houseScene, i));
-				houseModel[i]->addTexture(string("Assets\\column\\column_d.bmp"), FIF_BMP);
-				houseModel[i]->addNormalMap(string("Assets\\column\\column_n.bmp"), FIF_BMP);
-			}
-		}
-	}
-
-	if (houseScene) {
-
-		cout << "House model: " << houseFilename << " has " << houseScene->mNumMeshes << " meshe(s)\n";
-
-		if (houseScene->mNumMeshes > 0) {
-
-			// For each sub-mesh, setup a new AIMesh instance in the houseModel array
-			for (int i = 0; i < houseScene->mNumMeshes; i++) {
-
-				cout << "Loading house sub-mesh " << i << endl;
-				houseModel.push_back(new AIMesh(houseScene, i));
-				houseModel[i]->addTexture(string("Assets\\column\\column_d.bmp"), FIF_BMP);
-				houseModel[i]->addNormalMap(string("Assets\\column\\column_n.bmp"), FIF_BMP);
-			}
-		}
-	}
-	*/
 
 
 	
@@ -745,6 +766,35 @@ void renderWithDirectionalLight() {
 		}
 	}
 
+	//Render Pagoda Mesh
+	if (test == 1) {
+
+		mat4 modelTransform = glm::translate(identity<mat4>(), vec3(pagodaPos)) * glm::scale(identity<mat4>(), vec3(1.01f, 1.01f, 1.01f));
+
+		glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
+
+		for (AIMesh* mesh : pagodaModel)
+		{
+			mesh->setupTextures();
+			mesh->render();
+		}
+	}
+
+
+
+	//Render Lamp Mesh
+	if (test == 1) {
+
+		mat4 modelTransform = glm::translate(identity<mat4>(), vec3(lampPos)) * glm::scale(identity<mat4>(), vec3(1.01f, 1.01f, 1.01f));
+
+		glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
+
+		for (AIMesh* mesh : lampModel)
+		{
+			mesh->setupTextures();
+			mesh->render();
+		}
+	}
 
 #pragma endregion
 
