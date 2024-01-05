@@ -1,3 +1,4 @@
+/*
 #include "Tetrahedron.h"
 
 
@@ -94,3 +95,4 @@ void Tetrahedron::render() {
 	// Restore default shade model
 	glShadeModel(GL_SMOOTH);
 }
+*/

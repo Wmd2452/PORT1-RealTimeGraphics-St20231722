@@ -1,3 +1,4 @@
+/*
 #include "Cube.h"
 
 
@@ -130,3 +131,4 @@ void Cube::render() {
 	// Restore default shade model
 	glShadeModel(GL_SMOOTH);
 }
+*/

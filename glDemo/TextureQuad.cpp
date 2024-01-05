@@ -1,4 +1,4 @@
-
+/*
 #include "TextureQuad.h"
 
 
@@ -85,3 +85,4 @@ void textureQuadPostRender() {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
+*/

@@ -1,3 +1,5 @@
+
+/*
 #pragma once
 
 #include "core.h"
@@ -19,3 +21,4 @@ public:
 
 	void render();
 };
+*/

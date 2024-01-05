@@ -16,7 +16,7 @@
 
 
  Figue out how to import textures from the pagoda and lamp models to conveine into one cohesive pattern.
-
+ Delete Irrelevant CPP and Header Files
 
 
 
@@ -94,7 +94,7 @@ bool				rotateRightPressed;
 
 
 // Scene objects
-AIMesh*				groundMesh = nullptr;
+//AIMesh*				terrainMesh = nullptr;
 AIMesh*				creatureMesh = nullptr;
 AIMesh*				columnMesh = nullptr;
 Cylinder*			cylinderMesh = nullptr;
@@ -177,6 +177,7 @@ vector<AIMesh*> katanaModel = vector<AIMesh*>();
 vector<AIMesh*> toriiModel = vector<AIMesh*>();
 vector<AIMesh*> pagodaModel = vector<AIMesh*>();
 vector<AIMesh*> lampModel = vector<AIMesh*>();
+vector<AIMesh*> landscapeModel = vector<AIMesh*>();
 
 #pragma endregion
 
@@ -268,12 +269,12 @@ int main() {
 	// Setup Textures, VBOs and other scene objects
 	//
 	mainCamera = new ArcballCamera(-33.0f, 45.0f, 40.0f, 55.0f, (float)windowWidth/(float)windowHeight, 0.1f, 5000.0f);
-	
-	groundMesh = new AIMesh(string("Assets\\ground-surface\\surface01.obj"));
-	if (groundMesh) {
-		groundMesh->addTexture("Assets\\ground-surface\\lunar-surface01.png", FIF_PNG);
+	/*
+	terrainMesh = new AIMesh(string("Assets\\terrain-model\\TerrainSModel.obj"));
+	if (terrainMesh) {
+		terrainMesh->addTexture("Assets\\terrain-model\\TerrainModel_DiffuseMap.TIF", FIF_TIFF);
 	}
-
+	*/
 	creatureMesh = new AIMesh(string("Assets\\beast\\beast.obj"));
 	if (creatureMesh) {
 		creatureMesh->addTexture(string("Assets\\beast\\beast_texture.bmp"), FIF_BMP);
@@ -465,6 +466,32 @@ int main() {
 				lampModel.push_back(new AIMesh(lampScene, i));
 				lampModel[i]->addTexture(string("Assets\\lamp-model\\LampModelDiffuse.bmp"), FIF_BMP);
 				//lampModel[i]->addNormalMap(string("Assets\\lamp-model\\LampModelNormal.bmp"), FIF_BMP);
+			}
+		}
+	}
+
+	string landscapeFilename = string("Assets\\terrain-model\\TerrainModel.obj");
+	const struct aiScene* landscapeScene = aiImportFile(landscapeFilename.c_str(),
+		aiProcess_GenSmoothNormals |
+		aiProcess_CalcTangentSpace |
+		aiProcess_Triangulate |
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_SortByPType);
+
+
+	if (landscapeScene) {
+
+		cout << "landscape model: " << landscapeFilename << " has " << landscapeScene->mNumMeshes << " meshe(s)\n";
+
+		if (landscapeScene->mNumMeshes > 0) {
+
+			// For each sub-mesh, setup a new AIMesh instance in the houseModel array
+			for (int i = 0; i < landscapeScene->mNumMeshes; i++) {
+
+				cout << "Loading landscape sub-mesh " << i << endl;
+				landscapeModel.push_back(new AIMesh(katanaScene, i));
+				landscapeModel[i]->addTexture(string("Assets\\katana-model\\KatanaModel_DiffuseMap.bmp"), FIF_BMP);
+				landscapeModel[i]->addNormalMap(string("Assets\\katana-model\\KatanaModel_NormalMap"), FIF_BMP);
 			}
 		}
 	}
@@ -670,16 +697,17 @@ void renderWithDirectionalLight() {
 	glUniform3fv(texDirLightShader_lightDirection, 1, (GLfloat*)&(directLight.direction));
 	glUniform3fv(texDirLightShader_lightColour, 1, (GLfloat*)&(directLight.colour));
 
-	if (groundMesh) {
+	/*
+	if (terrainMesh) {
 
-		mat4 modelTransform = glm::scale(identity<mat4>(), vec3(10.0f, 1.0f, 10.0f));
+		mat4 modelTransform = glm::scale(identity<mat4>(), vec3(50.0f, 50.0f, 50.0f));
 
 		glUniformMatrix4fv(texDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
 		
-		groundMesh->setupTextures();
-		groundMesh->render();
+		terrainMesh->setupTextures();
+		terrainMesh->render();
 	}
-
+	*/
 	if (creatureMesh) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(), beastPos) * eulerAngleY<float>(glm::radians<float>(beastRotation));
@@ -796,6 +824,21 @@ void renderWithDirectionalLight() {
 		}
 	}
 
+
+	//Render Lamp Mesh
+	if (test == 1) {
+
+		mat4 modelTransform = glm::translate(identity<mat4>(), vec3(lampPos)) * glm::scale(identity<mat4>(), vec3(1.01f, 1.01f, 1.01f));
+
+		glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
+
+		for (AIMesh* mesh : landscapeModel)
+		{
+			mesh->setupTextures();
+			mesh->render();
+		}
+	}
+
 #pragma endregion
 
 
@@ -878,15 +921,17 @@ void renderWithPointLight() {
 	
 #pragma region Render opaque objects
 
-	if (groundMesh) {
+	/*
+	if (terrainMesh) {
 
 		mat4 modelTransform = glm::scale(identity<mat4>(), vec3(10.0f, 1.0f, 10.0f));
 
 		glUniformMatrix4fv(texPointLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
 
-		groundMesh->setupTextures();
-		groundMesh->render();
+		terrainMesh->setupTextures();
+		terrainMesh->render();
 	}
+	*/
 
 	if (creatureMesh) {
 
@@ -957,17 +1002,17 @@ void renderWithMultipleLights() {
 	glUniform1i(texDirLightShader_texture, 0); // set to point to texture unit 0 for AIMeshes
 	glUniform3fv(texDirLightShader_lightDirection, 1, (GLfloat*)&(directLight.direction));
 	glUniform3fv(texDirLightShader_lightColour, 1, (GLfloat*)&(directLight.colour));
-
-	if (groundMesh) {
+	/*
+	if (terrainMesh) {
 
 		mat4 modelTransform = glm::scale(identity<mat4>(), vec3(10.0f, 1.0f, 10.0f));
 
 		glUniformMatrix4fv(texDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
 
-		groundMesh->setupTextures();
-		groundMesh->render();
+		terrainMesh->setupTextures();
+		terrainMesh->render();
 	}
-
+	*/
 	if (creatureMesh) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(), beastPos) * eulerAngleY<float>(glm::radians<float>(beastRotation));
@@ -999,15 +1044,17 @@ void renderWithMultipleLights() {
 	glUniform3fv(texPointLightShader_lightColour, 1, (GLfloat*)&(lights[0].colour));
 	glUniform3fv(texPointLightShader_lightAttenuation, 1, (GLfloat*)&(lights[0].attenuation));
 
-	if (groundMesh) {
+	/*
+	if (terrainMesh) {
 
 		mat4 modelTransform = glm::scale(identity<mat4>(), vec3(10.0f, 1.0f, 10.0f));
 
 		glUniformMatrix4fv(texPointLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
 
-		groundMesh->setupTextures();
-		groundMesh->render();
+		terrainMesh->setupTextures();
+		terrainMesh->render();
 	}
+	*/
 
 	if (creatureMesh) {
 
