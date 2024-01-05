@@ -152,7 +152,7 @@ vec3 katanaPos = vec3(0.0f, 0.0f, 0.0f);
 //Pagoda Pos
 vec3 pagodaPos = vec3(-100.0f, 20.0f, 30.0f);
 
-vec3 housePos = vec3(-100.0f, 20.0f, 30.0f);
+vec3 housePos = vec3(0.0f, 0.0f, 0.0f);
 
 // beast model
 vec3 beastPos = vec3(2.0f, 0.0f, 0.0f);
@@ -172,7 +172,7 @@ bool rotateDirectionalLight = true;
 
 
 // Multi Mesh Models
-vector<AIMesh*> houseModel = vector<AIMesh*>();
+vector<AIMesh*> terrainModel = vector<AIMesh*>();
 vector<AIMesh*> katanaModel = vector<AIMesh*>();
 vector<AIMesh*> toriiModel = vector<AIMesh*>();
 vector<AIMesh*> pagodaModel = vector<AIMesh*>();
@@ -334,27 +334,27 @@ int main() {
 
 
 
-	string houseFilename = string("Assets\\House\\House_Multi.obj");
-	const struct aiScene* houseScene = aiImportFile(houseFilename.c_str(),
+	string terrainFilename = string("Assets\\terrain-model\\TerrainModel.obj");
+	const struct aiScene* terrainScene = aiImportFile(terrainFilename.c_str(),
 		aiProcess_GenSmoothNormals |
 		aiProcess_CalcTangentSpace |
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices |
 		aiProcess_SortByPType);
 
-	if (houseScene) {
+	if (terrainScene) {
 
-		cout << "House model: " << houseFilename << " has " << houseScene->mNumMeshes << " meshe(s)\n";
+		cout << "Terrain model: " << terrainFilename << " has " << terrainScene->mNumMeshes << " meshe(s)\n";
 
-		if (houseScene->mNumMeshes > 0) {
+		if (terrainScene->mNumMeshes > 0) {
 
-			// For each sub-mesh, setup a new AIMesh instance in the houseModel array
-			for (int i = 0; i < houseScene->mNumMeshes; i++) {
+			// For each sub-mesh, setup a new AIMesh instance in the terrainModel array
+			for (int i = 0; i < terrainScene->mNumMeshes; i++) {
 
 				cout << "Loading house sub-mesh " << i << endl;
-				houseModel.push_back(new AIMesh(houseScene, i));
-				houseModel[i]->addTexture(string("Assets\\column\\column_d.bmp"), FIF_BMP);
-				houseModel[i]->addNormalMap(string("Assets\\column\\column_n.bmp"), FIF_BMP);
+				terrainModel.push_back(new AIMesh(terrainScene, i));
+				terrainModel[i]->addTexture(string("Assets\\terrain-model\\TerrainModel_DiffuseMap.TIF"), FIF_TIFF);
+				terrainModel[i]->addNormalMap(string("Assets\\terrain-model\\TerrainModel_NormalMap.TIF"), FIF_TIFF);
 			}
 		}
 	}
@@ -719,18 +719,18 @@ void renderWithDirectionalLight() {
 	glUniform3fv(nMapDirLightShader_lightDirection, 1, (GLfloat*)&(directLight.direction));
 	glUniform3fv(nMapDirLightShader_lightColour, 1, (GLfloat*)&(directLight.colour));
 
-	// Render houseMesh (follows same pattern / code structure as other objects)
-	
 
-	int test = 1;
+	// Render Terrain (follows same pattern / code structure as other objects)
+
+	int test = 1; //Remove Later
 
 	if (test == 1) {
 
-		mat4 modelTransform = glm::translate(identity<mat4>(), vec3(housePos)) * glm::scale(identity<mat4>(), vec3(0.01f, 0.01f, 0.01f));
+		mat4 modelTransform = glm::translate(identity<mat4>(), vec3(housePos)) * glm::scale(identity<mat4>(), vec3(50.0f, 50.0f, 50.0f));
 
 		glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
 		
-		for (AIMesh* mesh : houseModel) 
+		for (AIMesh* mesh : terrainModel) 
 		{
 			mesh->setupTextures();
 			mesh->render();
@@ -799,6 +799,19 @@ void renderWithDirectionalLight() {
 	}
 
 
+	//Render Lamp Mesh
+	if (test == 1) {
+
+		mat4 modelTransform = glm::translate(identity<mat4>(), vec3(lampPos)) * glm::scale(identity<mat4>(), vec3(1.01f, 1.01f, 1.01f));
+
+		glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
+
+		for (AIMesh* mesh : lampModel)
+		{
+			mesh->setupTextures();
+			mesh->render();
+		}
+	}
 
 #pragma endregion
 
