@@ -1,4 +1,4 @@
-# Blender 4.0.2 MTL File: 'PagodaModel.blend'
+# Blender 4.0.2 MTL File: 'PagodaModel.obj'
 # www.blender.org
 
 newmtl Fence_Map
@@ -9,8 +9,8 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 3
-map_Kd D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Pagoda Modelling and Notes/Textures and Maps/Diffuse Maps/PagodaModel_RailingsDiffuse.tif
-map_Bump -bm 4.000000 D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Pagoda Modelling and Notes/Textures and Maps/Normal Maps/PagodaModel_RailingsNormal.tga
+map_Kd glDemo\Assets\pagoda-model/PagodaModel_RailingsDiffuse.tif
+map_Bump -bm 4.000000 glDemo\Assets\pagoda-model/PagodaModel_RailingsNormal.tga
 
 newmtl Pagoda_Base_Mat
 Ns 640.000000
@@ -20,8 +20,8 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Pagoda Modelling and Notes/Textures and Maps/Diffuse Maps/PagodaModel_BaseDiffuse.tif
-map_Bump -bm 1.600000 D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Pagoda Modelling and Notes/Textures and Maps/Normal Maps/PagodaModel_BaseNormal.tga
+map_Kd glDemo\Assets\pagoda-model/PagodaModel_BaseDiffuse.tif
+map_Bump -bm 1.600000 glDemo\Assets\pagoda-model/PagodaModel_BaseNormal.tga
 
 newmtl Pagoda_Sections_Mat
 Ns 535.557861
@@ -31,8 +31,8 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Pagoda Modelling and Notes/Textures and Maps/Diffuse Maps/PagodaModel_SectionDiffuse.tif
-map_Bump -bm 0.799999 D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Pagoda Modelling and Notes/Textures and Maps/Normal Maps/PagodaModel_SectionNormal.tga
+map_Kd glDemo\Assets\pagoda-model/PagodaModel_SectionDiffuse.tif
+map_Bump -bm 0.799999 glDemo\Assets\pagoda-model/PagodaModel_SectionNormal.tga
 
 newmtl Roof_Texture
 Ns 250.000000
@@ -42,8 +42,8 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Pagoda Modelling and Notes/Textures and Maps/Diffuse Maps/PagodaModel_RoofDiffuse.tif
-map_Bump -bm 6.800000 D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Pagoda Modelling and Notes/Textures and Maps/Normal Maps/PagodaModel_RoofNormal.tga
+map_Kd glDemo\Assets\pagoda-model/PagodaModel_RoofDiffuse.tif
+map_Bump -bm 6.800000 glDemo\Assets\pagoda-model/PagodaModel_RoofNormal.tga
 
 newmtl Stairs_Diff
 Ns 250.000000
@@ -53,8 +53,8 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Pagoda Modelling and Notes/Textures and Maps/Diffuse Maps/PagodaModel_StairsDiffuse.tif
-map_Bump -bm 2.300001 D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Pagoda Modelling and Notes/Textures and Maps/Normal Maps/PagodaModel_StairsNormal.tga
+map_Kd glDemo\Assets\pagoda-model/PagodaModel_StairsDiffuse.tif
+map_Bump -bm 2.300001 glDemo\Assets\pagoda-model/PagodaModel_StairsNormal.tga
 
 newmtl Test_Board_Mat
 Ns 250.000000
@@ -64,4 +64,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd C:/Users/dylan/OneDrive/Desktop/il_fullxfull.849823549_3gdt_1024x.webp
+map_Kd glDemo\Assets\pagoda-model/PagodaModel_StairsDiffuse.tif

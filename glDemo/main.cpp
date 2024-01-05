@@ -435,8 +435,8 @@ int main() {
 
 				cout << "Loading pagoda sub-mesh " << i << endl;
 				pagodaModel.push_back(new AIMesh(pagodaScene, i));
-				pagodaModel[i]->addTexture(string("Assets\\column\\column_d.bmp"), FIF_BMP);
-				pagodaModel[i]->addNormalMap(string("Assets\\column\\column_n.bmp"), FIF_BMP);
+				pagodaModel[i]->addTexture(string("Assets\\pagoda-model\\PagodaModel.mtl"), FIF_BMP);
+				pagodaModel[i]->addNormalMap(string("Assets\\pagoda-model\\PagodaModel.mtl"), FIF_BMP);
 			}
 		}
 	}
@@ -463,8 +463,8 @@ int main() {
 
 				cout << "Loading Lamp sub-mesh " << i << endl;
 				lampModel.push_back(new AIMesh(lampScene, i));
-				lampModel[i]->addTexture(string("Assets\\column\\column_d.bmp"), FIF_BMP);
-				lampModel[i]->addNormalMap(string("Assets\\column\\column_n.bmp"), FIF_BMP);
+				lampModel[i]->addTexture(string("Assets\\lamp-model\\LampModelDiffuse.bmp"), FIF_BMP);
+				//lampModel[i]->addNormalMap(string("Assets\\lamp-model\\LampModelNormal.bmp"), FIF_BMP);
 			}
 		}
 	}
