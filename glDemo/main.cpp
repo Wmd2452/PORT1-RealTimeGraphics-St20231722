@@ -177,7 +177,6 @@ vector<AIMesh*> katanaModel = vector<AIMesh*>();
 vector<AIMesh*> toriiModel = vector<AIMesh*>();
 vector<AIMesh*> pagodaModel = vector<AIMesh*>();
 vector<AIMesh*> lampModel = vector<AIMesh*>();
-vector<AIMesh*> landscapeModel = vector<AIMesh*>();
 
 #pragma endregion
 
@@ -470,31 +469,6 @@ int main() {
 		}
 	}
 
-	string landscapeFilename = string("Assets\\terrain-model\\TerrainModel.obj");
-	const struct aiScene* landscapeScene = aiImportFile(landscapeFilename.c_str(),
-		aiProcess_GenSmoothNormals |
-		aiProcess_CalcTangentSpace |
-		aiProcess_Triangulate |
-		aiProcess_JoinIdenticalVertices |
-		aiProcess_SortByPType);
-
-
-	if (landscapeScene) {
-
-		cout << "landscape model: " << landscapeFilename << " has " << landscapeScene->mNumMeshes << " meshe(s)\n";
-
-		if (landscapeScene->mNumMeshes > 0) {
-
-			// For each sub-mesh, setup a new AIMesh instance in the houseModel array
-			for (int i = 0; i < landscapeScene->mNumMeshes; i++) {
-
-				cout << "Loading landscape sub-mesh " << i << endl;
-				landscapeModel.push_back(new AIMesh(katanaScene, i));
-				landscapeModel[i]->addTexture(string("Assets\\katana-model\\KatanaModel_DiffuseMap.bmp"), FIF_BMP);
-				landscapeModel[i]->addNormalMap(string("Assets\\katana-model\\KatanaModel_NormalMap"), FIF_BMP);
-			}
-		}
-	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -825,19 +799,6 @@ void renderWithDirectionalLight() {
 	}
 
 
-	//Render Lamp Mesh
-	if (test == 1) {
-
-		mat4 modelTransform = glm::translate(identity<mat4>(), vec3(lampPos)) * glm::scale(identity<mat4>(), vec3(1.01f, 1.01f, 1.01f));
-
-		glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
-
-		for (AIMesh* mesh : landscapeModel)
-		{
-			mesh->setupTextures();
-			mesh->render();
-		}
-	}
 
 #pragma endregion
 

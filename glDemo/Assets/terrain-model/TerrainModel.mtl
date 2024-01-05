@@ -11,3 +11,80 @@ d 1.000000
 illum 2
 map_Kd D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Terrain Modelling and Notes/Textures And Maps/Diffuse/TerrainModel_DiffuseMap.tif
 map_Bump -bm 6.000000 D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Terrain Modelling and Notes/Textures And Maps/Normal/TerrainModel_NormalMap.tif
+
+newmtl Material.002
+Ns 9.111576
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Terrain Modelling and Notes/Textures And Maps/Diffuse/TerrainModel_DiffuseMap.tif
+map_Bump -bm 6.000000 D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Terrain Modelling and Notes/Textures And Maps/Normal/TerrainModel_NormalMap.tif
+
+newmtl Material.003
+Ns 9.111576
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Terrain Modelling and Notes/Textures And Maps/Diffuse/TerrainModel_DiffuseMap.tif
+map_Bump -bm 6.000000 D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Terrain Modelling and Notes/Textures And Maps/Normal/TerrainModel_NormalMap.tif
+
+newmtl Material.004
+Ns 9.111576
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Terrain Modelling and Notes/Textures And Maps/Diffuse/TerrainModel_DiffuseMap.tif
+map_Bump -bm 6.000000 D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Terrain Modelling and Notes/Textures And Maps/Normal/TerrainModel_NormalMap.tif
+
+newmtl Material.005
+Ns 9.111576
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Terrain Modelling and Notes/Textures And Maps/Diffuse/TerrainModel_DiffuseMap.tif
+map_Bump -bm 6.000000 D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Terrain Modelling and Notes/Textures And Maps/Normal/TerrainModel_NormalMap.tif
+
+newmtl Material.007
+Ns 9.111576
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Terrain Modelling and Notes/Textures And Maps/Diffuse/TerrainModel_DiffuseMap.tif
+map_Bump -bm 6.000000 D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Terrain Modelling and Notes/Textures And Maps/Normal/TerrainModel_NormalMap.tif
+
+newmtl Material.008
+Ns 9.111576
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Terrain Modelling and Notes/Textures And Maps/Diffuse/TerrainModel_DiffuseMap.tif
+map_Bump -bm 6.000000 D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Terrain Modelling and Notes/Textures And Maps/Normal/TerrainModel_NormalMap.tif
+
+newmtl Material.009
+Ns 9.111576
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Terrain Modelling and Notes/Textures And Maps/Diffuse/TerrainModel_DiffuseMap.tif
+map_Bump -bm 6.000000 D:/3DS Max/3DS Max Models/3D Modelling Submission/Asset Files/Models/Terrain Modelling and Notes/Textures And Maps/Normal/TerrainModel_NormalMap.tif
