@@ -140,23 +140,40 @@ GLint				nMapDirLightShader_lightColour;
 // cylinder model
 vec3 cylinderPos = vec3(-2.0f, 2.0f, 0.0f);
 
-// Torii Gate Pos
+// Torii Gate Scaling Rotating and Positioning
 vec3 toriiGatePos = vec3(0.0f, 0.0f, 0.0f);
+vec3 toriiGateScale = vec3(2.0f, 2.0f, 2.0f);
+float toriiGateRotX = 0.0f; float toriiGateRotY = 0.0f; float toriiGateRotZ = 0.0f; // Rotate Model in XYZ Coordinates
 
-//Lamp Pos
+// Torii Gate Scaling Rotating and Positioning
 vec3 lampPos = vec3(15.0f, 5.0f, 10.0f);
+vec3 lampScale = vec3(1.0f, 1.0f, 1.0f);
+float lampRotX = 0.0f; float lampRotY = 0.0f; float lampRotZ = 0.0f; // Rotate Model in XYZ Coordinates
 
-//Katana Pos
+// Katana Scaling Rotating and Positioning
 vec3 katanaPos = vec3(0.0f, 0.0f, 0.0f);
+vec3 katanaScale = vec3(0.1f, 0.1f, 0.1f);
+float katanaRotX = 0.0f; float katanaRotY = 0.0f; float katanaRotZ = 100.0f; // Rotate Model in XYZ Coordinates
 
-//Pagoda Pos
-vec3 pagodaPos = vec3(-100.0f, 20.0f, 30.0f);
+// Pagoda Scaling Rotating and Positioning
+vec3 pagodaPos = vec3(30.0f, 1.2f, 0.0f);
+vec3 pagodaScale = vec3(0.3f, 0.3f, 0.3f);
+float pagodaRotX = 0.0f; float pagodaRotY = 0.0f; float pagodaRotZ = 0.0f; // Rotate Model in XYZ Coordinates
 
-vec3 housePos = vec3(0.0f, 0.0f, 0.0f);
+// Terrain Scaling Rotating and Positioning
+vec3 terrainPos = vec3(-90.0f, -1.8f, 0.0f);
+vec3 terrainScale = vec3(50.0f, 50.0f, 50.0f);
+float terrainRotX = 0.0f; float terrainRotY = 0.0f; float terrainRotZ = 0.0f; // Rotate Model in XYZ Coordinates
 
 // beast model
 vec3 beastPos = vec3(2.0f, 0.0f, 0.0f);
+
+
 float beastRotation = 0.0f;
+
+float beastX = 0.0f; float beastY = 0.0f; float beastZ = 100.0f;
+
+
 
 
 // Directional light example (declared as a single instance)
@@ -726,7 +743,12 @@ void renderWithDirectionalLight() {
 
 	if (test == 1) {
 
-		mat4 modelTransform = glm::translate(identity<mat4>(), vec3(housePos)) * glm::scale(identity<mat4>(), vec3(50.0f, 50.0f, 50.0f));
+		mat4 modelTransform = glm::translate(identity<mat4>(),
+			vec3(terrainPos))
+			* glm::scale(identity<mat4>(), vec3(terrainScale))
+			* eulerAngleZ<float>(glm::radians<float>(terrainRotZ))
+			* eulerAngleY<float>(glm::radians<float>(terrainRotY))
+			* eulerAngleX<float>(glm::radians<float>(terrainRotX));
 
 		glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
 		
@@ -741,8 +763,16 @@ void renderWithDirectionalLight() {
 
 	//Render katanaMesh
 	if (test == 1) {
+		
+		mat4 modelTransform = glm::translate(identity<mat4>(), 
+			vec3(katanaPos)) 
+			* glm::scale(identity<mat4>(), vec3(katanaScale)) 
+			* eulerAngleZ<float>(glm::radians<float>(beastZ))
+			* eulerAngleY<float>(glm::radians<float>(beastY)) 
+			* eulerAngleX<float>(glm::radians<float>(beastX));
 
-		mat4 modelTransform = glm::translate(identity<mat4>(), vec3(katanaPos)) * glm::scale(identity<mat4>(), vec3(5.01f, 5.01f, 5.01f));
+
+		//mat4 modelTransform = glm::translate(identity<mat4>(), beastPos) * eulerAngleY<float>(glm::radians<float>(beastRotation));
 
 		glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
 
@@ -757,7 +787,12 @@ void renderWithDirectionalLight() {
 
 	if (test == 1) {
 
-		mat4 modelTransform = glm::translate(identity<mat4>(), vec3(toriiGatePos)) * glm::scale(identity<mat4>(), vec3(5.01f, 5.01f, 5.01f));
+		mat4 modelTransform = glm::translate(identity<mat4>(),
+			vec3(toriiGatePos))
+			* glm::scale(identity<mat4>(), vec3(toriiGateScale))
+			* eulerAngleZ<float>(glm::radians<float>(toriiGateRotZ))
+			* eulerAngleY<float>(glm::radians<float>(toriiGateRotY))
+			* eulerAngleX<float>(glm::radians<float>(toriiGateRotX));
 
 		glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
 
@@ -771,7 +806,12 @@ void renderWithDirectionalLight() {
 	//Render Pagoda Mesh
 	if (test == 1) {
 
-		mat4 modelTransform = glm::translate(identity<mat4>(), vec3(pagodaPos)) * glm::scale(identity<mat4>(), vec3(1.01f, 1.01f, 1.01f));
+		mat4 modelTransform = glm::translate(identity<mat4>(),
+			vec3(pagodaPos))
+			* glm::scale(identity<mat4>(), vec3(pagodaScale))
+			* eulerAngleZ<float>(glm::radians<float>(pagodaRotZ))
+			* eulerAngleY<float>(glm::radians<float>(pagodaRotY))
+			* eulerAngleX<float>(glm::radians<float>(pagodaRotX));
 
 		glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
 
@@ -787,7 +827,12 @@ void renderWithDirectionalLight() {
 	//Render Lamp Mesh
 	if (test == 1) {
 
-		mat4 modelTransform = glm::translate(identity<mat4>(), vec3(lampPos)) * glm::scale(identity<mat4>(), vec3(1.01f, 1.01f, 1.01f));
+		mat4 modelTransform = glm::translate(identity<mat4>(),
+			vec3(lampPos))
+			* glm::scale(identity<mat4>(), vec3(terrainScale))
+			* eulerAngleZ<float>(glm::radians<float>(lampRotZ))
+			* eulerAngleY<float>(glm::radians<float>(lampRotY))
+			* eulerAngleX<float>(glm::radians<float>(lampRotX));
 
 		glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
 
@@ -799,19 +844,6 @@ void renderWithDirectionalLight() {
 	}
 
 
-	//Render Lamp Mesh
-	if (test == 1) {
-
-		mat4 modelTransform = glm::translate(identity<mat4>(), vec3(lampPos)) * glm::scale(identity<mat4>(), vec3(1.01f, 1.01f, 1.01f));
-
-		glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
-
-		for (AIMesh* mesh : lampModel)
-		{
-			mesh->setupTextures();
-			mesh->render();
-		}
-	}
 
 #pragma endregion
 
@@ -1124,16 +1156,15 @@ void updateScene() {
 	else if (backPressed) {
 
 		mat4 R = eulerAngleY<float>(glm::radians<float>(beastRotation)); // local coord space / basis vectors - move along z
-		float dPos = -moveSpeed * tDelta; // calc movement based on time elapsed
-		beastPos += vec3(R[2].x * dPos, R[2].y * dPos, R[2].z * dPos); // add displacement to position vector
+		float dPos = -moveSpeed * tDelta; // calc movement based on time elapswdisplacement to position vector
 	}
 
 	if (rotateLeftPressed) {
-
+		
 		beastRotation += rotateSpeed * tDelta;
 	}
 	else if (rotateRightPressed) {
-
+		
 		beastRotation -= rotateSpeed * tDelta;
 	}
 
