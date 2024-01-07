@@ -46,6 +46,13 @@ struct DirectionalLight {
 		this->direction = direction;
 		this->colour = colour;
 	}
+
+
+	void DirectionalRed(vec3 direction, vec3 colour = vec3(1.0f, 0.0f, 0.0f)) {
+
+		this->direction = direction;
+		this->colour = colour;
+	}
 };
 
 struct PointLight {
@@ -96,7 +103,7 @@ bool				rotateRightPressed;
 // Scene objects
 //AIMesh*				terrainMesh = nullptr;
 AIMesh*				creatureMesh = nullptr;
-AIMesh*				columnMesh = nullptr;
+
 Cylinder*			cylinderMesh = nullptr;
 
 
@@ -146,19 +153,19 @@ vec3 toriiGateScale = vec3(2.0f, 2.0f, 2.0f);
 float toriiGateRotX = 0.0f; float toriiGateRotY = 0.0f; float toriiGateRotZ = 0.0f; // Rotate Model in XYZ Coordinates
 
 // Torii Gate Scaling Rotating and Positioning
-vec3 lampPos = vec3(15.0f, 5.0f, 10.0f);
-vec3 lampScale = vec3(1.0f, 1.0f, 1.0f);
-float lampRotX = 0.0f; float lampRotY = 0.0f; float lampRotZ = 0.0f; // Rotate Model in XYZ Coordinates
+vec3 lampPos = vec3(0.0f, 2.3f, 0.0f);
+vec3 lampScale = vec3(0.1f, 0.1f, 0.1f);
+float lampRotX = 90.0f; float lampRotY = 0.0f; float lampRotZ = 0.0f; // Rotate Model in XYZ Coordinates
 
 // Katana Scaling Rotating and Positioning
-vec3 katanaPos = vec3(0.0f, 0.0f, 0.0f);
-vec3 katanaScale = vec3(0.1f, 0.1f, 0.1f);
+vec3 katanaPos = vec3(0.0f, 1.0f, 0.0f);
+vec3 katanaScale = vec3(0.01f, 0.01f, 0.01f);
 float katanaRotX = 0.0f; float katanaRotY = 0.0f; float katanaRotZ = 100.0f; // Rotate Model in XYZ Coordinates
 
 // Pagoda Scaling Rotating and Positioning
-vec3 pagodaPos = vec3(30.0f, 1.2f, 0.0f);
+vec3 pagodaPos = vec3(30.0f, 1.4f, 0.0f);
 vec3 pagodaScale = vec3(0.3f, 0.3f, 0.3f);
-float pagodaRotX = 0.0f; float pagodaRotY = 0.0f; float pagodaRotZ = 0.0f; // Rotate Model in XYZ Coordinates
+float pagodaRotX = 0.0f; float pagodaRotY = -90.0f; float pagodaRotZ = 0.0f; // Rotate Model in XYZ Coordinates
 
 // Terrain Scaling Rotating and Positioning
 vec3 terrainPos = vec3(-90.0f, -1.8f, 0.0f);
@@ -180,9 +187,13 @@ float beastX = 0.0f; float beastY = 0.0f; float beastZ = 100.0f;
 float directLightTheta = 0.0f;
 DirectionalLight directLight = DirectionalLight(vec3(cosf(directLightTheta), sinf(directLightTheta), 0.0f));
 
+
+
+
 // Setup point light example light (use array to make adding other lights easier later)
-PointLight lights[1] = {
-	PointLight(vec3(0.0f, 1.0f, 0.0), vec3(1.0f, 0.0f, 0.0f), vec3(1.0f, 0.1f, 0.001f))
+PointLight lights[2] = {
+	PointLight(vec3(0.0f, 1.0f, 0.0), vec3(1.0f, 0.0f, 0.0f), vec3(1.0f, 0.1f, 0.001f)),
+	PointLight(vec3(5.0f, 5.0f, 5.0), vec3(0.0f, 0.0f, 1.0f), vec3(1.0f, 0.1f, 0.001f))
 };
 
 bool rotateDirectionalLight = true;
@@ -200,11 +211,6 @@ vector<AIMesh*> lampModel = vector<AIMesh*>();
 
 // Function prototypes
 void renderScene();
-//void renderHouse();
-//void renderLamp();
-//void renderKatana();
-//void renderToriiGate();
-//void renderPagoda();
 void renderWithDirectionalLight();
 void renderWithPointLight();
 void renderWithMultipleLights();
@@ -285,21 +291,10 @@ int main() {
 	// Setup Textures, VBOs and other scene objects
 	//
 	mainCamera = new ArcballCamera(-33.0f, 45.0f, 40.0f, 55.0f, (float)windowWidth/(float)windowHeight, 0.1f, 5000.0f);
-	/*
-	terrainMesh = new AIMesh(string("Assets\\terrain-model\\TerrainSModel.obj"));
-	if (terrainMesh) {
-		terrainMesh->addTexture("Assets\\terrain-model\\TerrainModel_DiffuseMap.TIF", FIF_TIFF);
-	}
-	*/
+
 	creatureMesh = new AIMesh(string("Assets\\beast\\beast.obj"));
 	if (creatureMesh) {
 		creatureMesh->addTexture(string("Assets\\beast\\beast_texture.bmp"), FIF_BMP);
-	}
-	
-	columnMesh = new AIMesh(string("Assets\\column\\Column.obj"));
-	if (columnMesh) {
-		columnMesh->addTexture(string("Assets\\column\\column_d.bmp"), FIF_BMP);
-		columnMesh->addNormalMap(string("Assets\\column\\column_n.bmp"), FIF_BMP);
 	}
 
 	cylinderMesh = new Cylinder(string("Assets\\cylinder\\cylinderT.obj"));
@@ -481,7 +476,7 @@ int main() {
 				cout << "Loading Lamp sub-mesh " << i << endl;
 				lampModel.push_back(new AIMesh(lampScene, i));
 				lampModel[i]->addTexture(string("Assets\\lamp-model\\LampModelDiffuse.bmp"), FIF_BMP);
-				//lampModel[i]->addNormalMap(string("Assets\\lamp-model\\LampModelNormal.bmp"), FIF_BMP);
+				lampModel[i]->addNormalMap(string("Assets\\lamp-model\\LampModelNormal.bmp"), FIF_BMP);
 			}
 		}
 	}
@@ -537,112 +532,13 @@ int main() {
 
 void renderScene()
 {
-	//renderHouse();
-	//renderKatana();
-	//renderToriiGate();
+
 	renderWithDirectionalLight();
 	//renderWithPointLight();
 	//renderWithMultipleLights();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-/*
-void renderHouse() {
-
-	// Clear the rendering window
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// Get camera matrices
-	mat4 cameraProjection = mainCamera->projectionTransform();
-	mat4 cameraView = mainCamera->viewTransform();
-	
-	// Setup complete transform matrix - the modelling transform scales the house down a bit
-	mat4 translateMatrix = cameraProjection * cameraView * glm::translate(identity<mat4>(), housePos);
-
-	mat4 mvpMatrix = translateMatrix * glm::scale(identity<mat4>(), vec3(10.0f));
-	// Setup renderer to draw wireframe
-	//glDisable(GL_CULL_FACE);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-	// Use (very) basic shader and set mvpMatrux uniform variable
-	glUseProgram(basicShader);
-	glUniformMatrix4fv(basicShader_mvpMatrix, 1, GL_FALSE, (GLfloat*)&mvpMatrix);
-
-
-
-
-
-	// Restore fixed-function pipeline
-	//glUseProgram(0);
-	//glBindVertexArray(0);
-
-}
-
-void renderKatana() {
-
-	// Clear the rendering window
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// Get camera matrices
-	mat4 cameraProjection = mainCamera->projectionTransform();
-	mat4 cameraView = mainCamera->viewTransform();
-
-	// Setup complete transform matrix - the modelling transform scales the house down a bit
-
-	mat4 translateMatrix = cameraProjection * cameraView * glm::translate(identity<mat4>(), katanaPos);
-
-	mat4 mvpMatrix = translateMatrix * glm::scale(identity<mat4>(), vec3(10.0f));
-
-	// Setup renderer to draw wireframe
-	//glDisable(GL_CULL_FACE);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-	// Use (very) basic shader and set mvpMatrux uniform variable
-	glUseProgram(basicShader);
-	glUniformMatrix4fv(basicShader_mvpMatrix, 1, GL_FALSE, (GLfloat*)&mvpMatrix);
-
-
-
-	// Restore fixed-function pipeline
-	glUseProgram(0);
-	glBindVertexArray(0);
-
-}
-
-void renderToriiGate() {
-
-	// Clear the rendering window
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// Get camera matrices
-	mat4 cameraProjection = mainCamera->projectionTransform();
-	mat4 cameraView = mainCamera->viewTransform();
-
-	// Setup complete transform matrix - the modelling transform scales the house down a bit
-
-	mat4 translateMatrix = cameraProjection * cameraView * glm::translate(identity<mat4>(), toriiGatePos);
-
-	mat4 mvpMatrix = translateMatrix * glm::scale(identity<mat4>(), vec3(10.0f));
-
-	// Setup renderer to draw wireframe
-	//glDisable(GL_CULL_FACE);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-	// Use (very) basic shader and set mvpMatrux uniform variable
-	glUseProgram(basicShader);
-	glUniformMatrix4fv(basicShader_mvpMatrix, 1, GL_FALSE, (GLfloat*)&mvpMatrix);
-
-
-
-	// Restore fixed-function pipeline
-	glUseProgram(0);
-	glBindVertexArray(0);
-
-
-}
-*/
 
 
 
@@ -688,17 +584,6 @@ void renderWithDirectionalLight() {
 	glUniform3fv(texDirLightShader_lightDirection, 1, (GLfloat*)&(directLight.direction));
 	glUniform3fv(texDirLightShader_lightColour, 1, (GLfloat*)&(directLight.colour));
 
-	/*
-	if (terrainMesh) {
-
-		mat4 modelTransform = glm::scale(identity<mat4>(), vec3(50.0f, 50.0f, 50.0f));
-
-		glUniformMatrix4fv(texDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
-		
-		terrainMesh->setupTextures();
-		terrainMesh->render();
-	}
-	*/
 	if (creatureMesh) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(), beastPos) * eulerAngleY<float>(glm::radians<float>(beastRotation));
@@ -708,20 +593,6 @@ void renderWithDirectionalLight() {
 		creatureMesh->setupTextures();
 		creatureMesh->render();
 	}
-
-	// Render diffuse textured column (to compare with normal mapped version rendered below)...
-
-
-	if (columnMesh) {
-
-		mat4 modelTransform = glm::translate(identity<mat4>(), vec3(2.0f, 0.0f, 2.0f)) * glm::scale(identity<mat4>(), vec3(0.01f, 0.01f, 0.01f));
-
-		glUniformMatrix4fv(texDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
-
-		columnMesh->setupTextures();
-		columnMesh->render();
-	}
-
 
 	
 	//  *** normal mapping ***  Render the normal mapped column
@@ -829,7 +700,7 @@ void renderWithDirectionalLight() {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(lampPos))
-			* glm::scale(identity<mat4>(), vec3(terrainScale))
+			* glm::scale(identity<mat4>(), vec3(lampScale))
 			* eulerAngleZ<float>(glm::radians<float>(lampRotZ))
 			* eulerAngleY<float>(glm::radians<float>(lampRotY))
 			* eulerAngleX<float>(glm::radians<float>(lampRotX));
@@ -882,7 +753,7 @@ void renderWithDirectionalLight() {
 
 	
 	//
-	// For demo purposes, render directional light source
+	//render directional light source
 	//
 	
 	// Restore fixed-function pipeline
@@ -926,18 +797,6 @@ void renderWithPointLight() {
 	glUniform3fv(texPointLightShader_lightAttenuation, 1, (GLfloat*)&(lights[0].attenuation));
 	
 #pragma region Render opaque objects
-
-	/*
-	if (terrainMesh) {
-
-		mat4 modelTransform = glm::scale(identity<mat4>(), vec3(10.0f, 1.0f, 10.0f));
-
-		glUniformMatrix4fv(texPointLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
-
-		terrainMesh->setupTextures();
-		terrainMesh->render();
-	}
-	*/
 
 	if (creatureMesh) {
 
@@ -1008,17 +867,7 @@ void renderWithMultipleLights() {
 	glUniform1i(texDirLightShader_texture, 0); // set to point to texture unit 0 for AIMeshes
 	glUniform3fv(texDirLightShader_lightDirection, 1, (GLfloat*)&(directLight.direction));
 	glUniform3fv(texDirLightShader_lightColour, 1, (GLfloat*)&(directLight.colour));
-	/*
-	if (terrainMesh) {
 
-		mat4 modelTransform = glm::scale(identity<mat4>(), vec3(10.0f, 1.0f, 10.0f));
-
-		glUniformMatrix4fv(texDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
-
-		terrainMesh->setupTextures();
-		terrainMesh->render();
-	}
-	*/
 	if (creatureMesh) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(), beastPos) * eulerAngleY<float>(glm::radians<float>(beastRotation));
@@ -1050,17 +899,6 @@ void renderWithMultipleLights() {
 	glUniform3fv(texPointLightShader_lightColour, 1, (GLfloat*)&(lights[0].colour));
 	glUniform3fv(texPointLightShader_lightAttenuation, 1, (GLfloat*)&(lights[0].attenuation));
 
-	/*
-	if (terrainMesh) {
-
-		mat4 modelTransform = glm::scale(identity<mat4>(), vec3(10.0f, 1.0f, 10.0f));
-
-		glUniformMatrix4fv(texPointLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
-
-		terrainMesh->setupTextures();
-		terrainMesh->render();
-	}
-	*/
 
 	if (creatureMesh) {
 
@@ -1112,6 +950,9 @@ void renderWithMultipleLights() {
 	glColor3f(directLight.colour.r, directLight.colour.g, directLight.colour.b);
 	glVertex3f(directLight.direction.x * 10.0f, directLight.direction.y * 10.0f, directLight.direction.z * 10.0f);
 
+
+	
+
 	glColor3f(lights[0].colour.r, lights[0].colour.g, lights[0].colour.b);
 	glVertex3f(lights[0].pos.x, lights[0].pos.y, lights[0].pos.z);
 	
@@ -1119,7 +960,7 @@ void renderWithMultipleLights() {
 }
 
 
-// Function called to animate elements in the scene
+// Animate elements
 void updateScene() {
 
 	float tDelta = 0.0f;
