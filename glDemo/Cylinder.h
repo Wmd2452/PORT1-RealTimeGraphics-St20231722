@@ -5,7 +5,6 @@
 class Cylinder : public AIMesh {
 
 	// Texture objects for force field effect
-	// note: don't use inherited texture for these!
 	GLuint wave1Texture = 0;
 	GLuint wave2Texture = 0;
 

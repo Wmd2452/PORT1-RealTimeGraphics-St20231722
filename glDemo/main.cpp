@@ -75,10 +75,10 @@ bool				rotateRightPressed;
 
 
 // Scene objects
-//AIMesh*				terrainMesh = nullptr;
 AIMesh*				creatureMesh = nullptr;
 
 Cylinder*			cylinderMesh = nullptr;
+
 
 
 // Shaders
@@ -280,13 +280,13 @@ int main() {
 	//
 	mainCamera = new ArcballCamera(-33.0f, 45.0f, 40.0f, 55.0f, (float)windowWidth/(float)windowHeight, 0.1f, 5000.0f);
 
-	creatureMesh = new AIMesh(string("Assets\\beast\\beast.obj"));
+	creatureMesh = new AIMesh(string("Assets\\human-character\\HumanCharacterModel.obj"));
 	if (creatureMesh) {
-		creatureMesh->addTexture(string("Assets\\beast\\beast_texture.bmp"), FIF_BMP);
+		creatureMesh->addTexture(string("Assets\\human-character\\HumanModel_DiffuseMap.tif"), FIF_TIFF);
 	}
 
 	cylinderMesh = new Cylinder(string("Assets\\cylinder\\cylinderT.obj"));
-	
+
 
 	// Load shaders
 	basicShader = setupShaders(string("Assets\\Shaders\\basic_shader.vert"), string("Assets\\Shaders\\basic_shader.frag"));
@@ -1071,7 +1071,7 @@ void renderWithMultipleLights()
 	mat4 cameraView = mainCamera->viewTransform() * translate(identity<mat4>(), -beastPos);
 
 
-#pragma region Render all opaque objects with directional light
+#pragma region Render all objects with directional light
 
 	glUseProgram(texDirLightShader);
 
@@ -1259,7 +1259,7 @@ void renderWithMultipleLights()
 
 
 
-#pragma region Render all opaque objects with point light
+#pragma region Render all objects with point light
 
 	glUseProgram(texPointLightShader);
 
@@ -1441,6 +1441,8 @@ void renderWithMultipleLights()
 #pragma endregion
 
 
+	
+
 	// Restore fixed-function
 	glUseProgram(0);
 	glBindVertexArray(0);
@@ -1510,28 +1512,6 @@ void renderTransparentModels() {
 		cylinderMesh->render(T);
 	}
 
-
-
-
-
-	if (renderModel == true) {
-
-		mat4 T = cameraProjection * cameraView * glm::translate(identity<mat4>(),
-			vec3(terrainPos))
-			* glm::scale(identity<mat4>(), vec3(terrainScale))
-			* eulerAngleZ<float>(glm::radians<float>(terrainRotZ))
-			* eulerAngleY<float>(glm::radians<float>(terrainRotY))
-			* eulerAngleX<float>(glm::radians<float>(terrainRotX));
-
-		glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&T);
-
-		for (AIMesh* mesh : terrainModel)
-		{
-			mesh->setupTextures();
-			mesh->render();
-		}
-
-	}
 
 
 	//Render katanaMesh
