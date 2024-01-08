@@ -75,7 +75,7 @@ bool				rotateRightPressed;
 
 
 // Scene objects
-AIMesh*				creatureMesh = nullptr;
+AIMesh*				characterMesh = nullptr;
 
 Cylinder*			cylinderMesh = nullptr;
 
@@ -152,12 +152,12 @@ vec3 terrainScale = vec3(50.0f, 50.0f, 50.0f);
 float terrainRotX = 0.0f; float terrainRotY = 0.0f; float terrainRotZ = 0.0f; // Rotate Model in XYZ Coordinates
 
 // beast model
-vec3 beastPos = vec3(2.0f, 0.0f, 0.0f);
+vec3 characterPos = vec3(2.0f, 0.0f, 0.0f);
 
 
-float beastRotation = 0.0f;
+float characterRotation = 0.0f;
 
-float beastX = 0.0f; float beastY = 0.0f; float beastZ = 100.0f;
+float characterX = 0.0f; float characterY = 0.0f; float characterZ = 100.0f;
 
 bool rotateDirectionalLight = true;
 bool renderModel = true;
@@ -280,9 +280,9 @@ int main() {
 	//
 	mainCamera = new ArcballCamera(-33.0f, 45.0f, 40.0f, 55.0f, (float)windowWidth/(float)windowHeight, 0.1f, 5000.0f);
 
-	creatureMesh = new AIMesh(string("Assets\\human-character\\HumanCharacterModel.obj"));
-	if (creatureMesh) {
-		creatureMesh->addTexture(string("Assets\\human-character\\HumanModel_DiffuseMap.tif"), FIF_TIFF);
+	characterMesh = new AIMesh(string("Assets\\human-character\\HumanCharacterModel.obj"));
+	if (characterMesh) {
+		characterMesh->addTexture(string("Assets\\human-character\\HumanModel_DiffuseMap.tif"), FIF_TIFF);
 	}
 
 	cylinderMesh = new Cylinder(string("Assets\\cylinder\\cylinderT.obj"));
@@ -585,7 +585,7 @@ void renderNoTextureModels() {
 
 	// Get camera matrices
 	mat4 cameraProjection = mainCamera->projectionTransform();
-	mat4 cameraView = mainCamera->viewTransform() * translate(identity<mat4>(), -beastPos);
+	mat4 cameraView = mainCamera->viewTransform() * translate(identity<mat4>(), -characterPos);
 
 #pragma region Render opaque objects
 
@@ -598,14 +598,14 @@ void renderNoTextureModels() {
 	glUniform3fv(texDirLightShader_lightDirection, 1, (GLfloat*)&(directLight.direction));
 	glUniform3fv(texDirLightShader_lightColour, 1, (GLfloat*)&(directLight.colour));
 
-	if (creatureMesh) {
+	if (characterMesh) {
 
-		mat4 modelTransform = glm::translate(identity<mat4>(), beastPos) * eulerAngleY<float>(glm::radians<float>(beastRotation));
+		mat4 modelTransform = glm::translate(identity<mat4>(), characterPos) * eulerAngleY<float>(glm::radians<float>(characterRotation));
 
 		glUniformMatrix4fv(texDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
 
-		//creatureMesh->setupTextures();
-		creatureMesh->render();
+	
+		characterMesh->render();
 	}
 
 	
@@ -638,7 +638,7 @@ void renderNoTextureModels() {
 		
 		for (AIMesh* mesh : terrainModel) 
 		{
-			//mesh->setupTextures();
+			
 			mesh->render();
 		}
 	
@@ -651,18 +651,15 @@ void renderNoTextureModels() {
 		mat4 modelTransform = glm::translate(identity<mat4>(), 
 			vec3(katanaPos)) 
 			* glm::scale(identity<mat4>(), vec3(katanaScale)) 
-			* eulerAngleZ<float>(glm::radians<float>(beastZ))
-			* eulerAngleY<float>(glm::radians<float>(beastY)) 
-			* eulerAngleX<float>(glm::radians<float>(beastX));
-
-
-		//mat4 modelTransform = glm::translate(identity<mat4>(), beastPos) * eulerAngleY<float>(glm::radians<float>(beastRotation));
+			* eulerAngleZ<float>(glm::radians<float>(characterZ))
+			* eulerAngleY<float>(glm::radians<float>(characterY))
+			* eulerAngleX<float>(glm::radians<float>(characterX));
 
 		glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
 
 		for (AIMesh* mesh : katanaModel)
 		{
-			//mesh->setupTextures();
+	
 			mesh->render();
 		}
 	}
@@ -682,7 +679,6 @@ void renderNoTextureModels() {
 
 		for (AIMesh* mesh : toriiModel)
 		{
-			//mesh->setupTextures();
 			mesh->render();
 		}
 	}
@@ -700,7 +696,6 @@ void renderNoTextureModels() {
 
 		for (AIMesh* mesh : toriiModel2)
 		{
-			//mesh->setupTextures();
 			mesh->render();
 		}
 	}
@@ -718,7 +713,6 @@ void renderNoTextureModels() {
 
 		for (AIMesh* mesh : toriiModel3)
 		{
-			//mesh->setupTextures();
 			mesh->render();
 		}
 	}
@@ -737,7 +731,6 @@ void renderNoTextureModels() {
 
 		for (AIMesh* mesh : pagodaModel)
 		{
-			//mesh->setupTextures();
 			mesh->render();
 		}
 	}
@@ -758,7 +751,6 @@ void renderNoTextureModels() {
 
 		for (AIMesh* mesh : lampModel)
 		{
-			//mesh->setupTextures();
 			mesh->render();
 		}
 	}
@@ -776,7 +768,6 @@ void renderNoTextureModels() {
 
 		for (AIMesh* mesh : lampModel2)
 		{
-			//mesh->setupTextures();
 			mesh->render();
 		}
 	}
@@ -828,7 +819,7 @@ void renderTexturedModels() {
 
 	// Get camera matrices
 	mat4 cameraProjection = mainCamera->projectionTransform();
-	mat4 cameraView = mainCamera->viewTransform() * translate(identity<mat4>(), -beastPos);
+	mat4 cameraView = mainCamera->viewTransform() * translate(identity<mat4>(), -characterPos);
 
 #pragma region Render opaque objects
 
@@ -842,14 +833,14 @@ void renderTexturedModels() {
 	glUniform3fv(texDirLightShader_lightDirection, 1, (GLfloat*)&(directLight.direction));
 	glUniform3fv(texDirLightShader_lightColour, 1, (GLfloat*)&(directLight.colour));
 
-	if (creatureMesh) {
+	if (characterMesh) {
 
-		mat4 modelTransform = glm::translate(identity<mat4>(), beastPos) * eulerAngleY<float>(glm::radians<float>(beastRotation));
+		mat4 modelTransform = glm::translate(identity<mat4>(), characterPos) * eulerAngleY<float>(glm::radians<float>(characterRotation));
 
 		glUniformMatrix4fv(texDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
 
-		creatureMesh->setupTextures();
-		creatureMesh->render();
+		characterMesh->setupTextures();
+		characterMesh->render();
 	}
 
 
@@ -894,9 +885,9 @@ void renderTexturedModels() {
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(katanaPos))
 			* glm::scale(identity<mat4>(), vec3(katanaScale))
-			* eulerAngleZ<float>(glm::radians<float>(beastZ))
-			* eulerAngleY<float>(glm::radians<float>(beastY))
-			* eulerAngleX<float>(glm::radians<float>(beastX));
+			* eulerAngleZ<float>(glm::radians<float>(characterZ))
+			* eulerAngleY<float>(glm::radians<float>(characterY))
+			* eulerAngleX<float>(glm::radians<float>(characterX));
 
 
 		//mat4 modelTransform = glm::translate(identity<mat4>(), beastPos) * eulerAngleY<float>(glm::radians<float>(beastRotation));
@@ -1068,7 +1059,7 @@ void renderWithMultipleLights()
 
 	// Get camera matrices
 	mat4 cameraProjection = mainCamera->projectionTransform();
-	mat4 cameraView = mainCamera->viewTransform() * translate(identity<mat4>(), -beastPos);
+	mat4 cameraView = mainCamera->viewTransform() * translate(identity<mat4>(), -characterPos);
 
 
 #pragma region Render all objects with directional light
@@ -1083,14 +1074,14 @@ void renderWithMultipleLights()
 
 
 
-	if (creatureMesh) {
+	if (characterMesh) {
 
-		mat4 modelTransform = glm::translate(identity<mat4>(), beastPos) * eulerAngleY<float>(glm::radians<float>(beastRotation));
+		mat4 modelTransform = glm::translate(identity<mat4>(), characterPos) * eulerAngleY<float>(glm::radians<float>(characterRotation));
 
 		glUniformMatrix4fv(texDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
 
-		creatureMesh->setupTextures();
-		creatureMesh->render();
+		characterMesh->setupTextures();
+		characterMesh->render();
 	}
 
 
@@ -1120,9 +1111,9 @@ void renderWithMultipleLights()
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(katanaPos))
 			* glm::scale(identity<mat4>(), vec3(katanaScale))
-			* eulerAngleZ<float>(glm::radians<float>(beastZ))
-			* eulerAngleY<float>(glm::radians<float>(beastY))
-			* eulerAngleX<float>(glm::radians<float>(beastX));
+			* eulerAngleZ<float>(glm::radians<float>(characterZ))
+			* eulerAngleY<float>(glm::radians<float>(characterY))
+			* eulerAngleX<float>(glm::radians<float>(characterX));
 
 
 
@@ -1271,14 +1262,14 @@ void renderWithMultipleLights()
 	glUniform3fv(texPointLightShader_lightAttenuation, 1, (GLfloat*)&(lights[0].attenuation));
 
 
-	if (creatureMesh) {
+	if (characterMesh) {
 
-		mat4 modelTransform = glm::translate(identity<mat4>(), beastPos) * eulerAngleY<float>(glm::radians<float>(beastRotation));
+		mat4 modelTransform = glm::translate(identity<mat4>(), characterPos) * eulerAngleY<float>(glm::radians<float>(characterRotation));
 
 		glUniformMatrix4fv(texPointLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
 
-		creatureMesh->setupTextures();
-		creatureMesh->render();
+		characterMesh->setupTextures();
+		characterMesh->render();
 	}
 
 
@@ -1310,9 +1301,9 @@ void renderWithMultipleLights()
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(katanaPos))
 			* glm::scale(identity<mat4>(), vec3(katanaScale))
-			* eulerAngleZ<float>(glm::radians<float>(beastZ))
-			* eulerAngleY<float>(glm::radians<float>(beastY))
-			* eulerAngleX<float>(glm::radians<float>(beastX));
+			* eulerAngleZ<float>(glm::radians<float>(characterZ))
+			* eulerAngleY<float>(glm::radians<float>(characterY))
+			* eulerAngleX<float>(glm::radians<float>(characterX));
 
 		glUniformMatrix4fv(texPointLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
 
@@ -1484,7 +1475,7 @@ void renderTransparentModels() {
 
 	// Get camera matrices
 	mat4 cameraProjection = mainCamera->projectionTransform();
-	mat4 cameraView = mainCamera->viewTransform() * translate(identity<mat4>(), -beastPos);
+	mat4 cameraView = mainCamera->viewTransform() * translate(identity<mat4>(), -characterPos);
 
 
 
@@ -1520,9 +1511,9 @@ void renderTransparentModels() {
 		mat4 T = cameraProjection * cameraView * glm::translate(identity<mat4>(),
 			vec3(katanaPos))
 			* glm::scale(identity<mat4>(), vec3(katanaScale))
-			* eulerAngleZ<float>(glm::radians<float>(beastZ))
-			* eulerAngleY<float>(glm::radians<float>(beastY))
-			* eulerAngleX<float>(glm::radians<float>(beastX));
+			* eulerAngleZ<float>(glm::radians<float>(characterZ))
+			* eulerAngleY<float>(glm::radians<float>(characterY))
+			* eulerAngleX<float>(glm::radians<float>(characterX));
 
 	     glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&T);
 
@@ -1643,23 +1634,23 @@ void updateScene() {
 
 	if (forwardPressed) {
 
-		mat4 R = eulerAngleY<float>(glm::radians<float>(beastRotation)); // local coord space / basis vectors - move along z
+		mat4 R = eulerAngleY<float>(glm::radians<float>(characterRotation)); // local coord space / basis vectors - move along z
 		float dPos = moveSpeed * tDelta; // calc movement based on time elapsed
-		beastPos += vec3(R[2].x * dPos, R[2].y * dPos, R[2].z * dPos); // add displacement to position vector
+		characterPos += vec3(R[2].x * dPos, R[2].y * dPos, R[2].z * dPos); // add displacement to position vector
 	}
 	else if (backPressed) {
 
-		mat4 R = eulerAngleY<float>(glm::radians<float>(beastRotation)); // local coord space / basis vectors - move along z
+		mat4 R = eulerAngleY<float>(glm::radians<float>(characterRotation)); // local coord space / basis vectors - move along z
 		float dPos = -moveSpeed * tDelta; // calc movement based on time elapswdisplacement to position vector
 	}
 
 	if (rotateLeftPressed) {
 		
-		beastRotation += rotateSpeed * tDelta;
+		characterRotation += rotateSpeed * tDelta;
 	}
 	else if (rotateRightPressed) {
 		
-		beastRotation -= rotateSpeed * tDelta;
+		characterRotation -= rotateSpeed * tDelta;
 	}
 
 }
