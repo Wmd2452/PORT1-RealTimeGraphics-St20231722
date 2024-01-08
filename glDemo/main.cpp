@@ -7,25 +7,6 @@
 #include "AIMesh.h"
 #include "Cylinder.h"
 
-
-/*
- To Do List Delete Later!
-
- Have The scale of objects assigned to a variable to increase readability
- Sort out the scale and placement of objects in the scene too speradic and all over thje place atm while im testing them tidy up before submission
-
-
- Figue out how to import textures from the pagoda and lamp models to conveine into one cohesive pattern.
- Delete Irrelevant CPP and Header Files
-
-
-
-
-
-
-
-
-*/
 using namespace std;
 using namespace glm;
 
@@ -37,18 +18,11 @@ struct DirectionalLight {
 	
 	DirectionalLight() {
 
-		direction = vec3(0.0f, 1.0f, 0.0f); // default to point upwards
+		direction = vec3(0.0f, 0.0f, 0.0f); 
 		colour = vec3(1.0f, 1.0f, 1.0f);
 	}
 
 	DirectionalLight(vec3 direction, vec3 colour = vec3(1.0f, 1.0f, 1.0f)) {
-
-		this->direction = direction;
-		this->colour = colour;
-	}
-
-
-	void DirectionalRed(vec3 direction, vec3 colour = vec3(1.0f, 0.0f, 0.0f)) {
 
 		this->direction = direction;
 		this->colour = colour;
@@ -132,9 +106,8 @@ GLint				texPointLightShader_lightPosition;
 GLint				texPointLightShader_lightColour;
 GLint				texPointLightShader_lightAttenuation;
 
-//  *** normal mapping *** Normal mapped texture with Directional light
-// This is the same as the texture direct light shader above, but with the addtional uniform variable
-// to set the normal map sampler2D variable in the fragment shader.
+//Normal mapping texture with Directional light
+//set the normal map sampler2D variable in the frag shader
 GLuint				nMapDirLightShader;
 GLint				nMapDirLightShader_modelMatrix;
 GLint				nMapDirLightShader_viewMatrix;
@@ -147,31 +120,20 @@ GLint				nMapDirLightShader_lightColour;
 // cylinder model
 vec3 cylinderPos = vec3(-2.0f, 2.0f, 0.0f);
 
-// Torii Gate 1 Scaling Rotating and Positioning
+// Torii Gate Scaling Rotating and Positioning
 vec3 toriiGatePos = vec3(0.0f, 0.0f, 0.0f);
 vec3 toriiGateScale = vec3(2.0f, 2.0f, 2.0f);
 float toriiGateRotX = 0.0f; float toriiGateRotY = 0.0f; float toriiGateRotZ = 0.0f; // Rotate Model in XYZ Coordinates
-
-
-// Torii Gate 2 Scaling Rotating and Positioning
+//Torii gate Clones
 vec3 toriiGatePos2 = vec3(10.0f, 0.0f, 0.0f);
-//vec3 toriiGateScale2 = vec3(2.0f, 2.0f, 2.0f);
-//float toriiGateRotX2 = 0.0f; float toriiGateRotY = 0.0f; float toriiGateRotZ = 0.0f; // Rotate Model in XYZ Coordinates
-
-// Torii Gate 3 Scaling Rotating and Positioning
 vec3 toriiGatePos3 = vec3(5.0f, 0.0f, 0.0f);
-//vec3 toriiGateScale3 = vec3(2.0f, 2.0f, 2.0f);
-//float toriiGateRotX3 = 0.0f; float toriiGateRotY3 = 0.0f; float toriiGateRotZ3 = 0.0f; // Rotate Model in XYZ Coordinates
 
 // Lamp Scaling Rotating and Positioning
 vec3 lampPos = vec3(-1.0f, 2.3f, 2.5f);
 vec3 lampScale = vec3(0.1f, 0.1f, 0.1f);
 float lampRotX = 90.0f; float lampRotY = 90.0f; float lampRotZ = 0.0f; // Rotate Model in XYZ Coordinates
-
-// Lamp 2 Scaling Rotating and Positioning
+// Lamp Clone
 vec3 lampPos2 = vec3(-1.0f, 2.3f, -2.5f);
-//vec3 lampScale = vec3(0.1f, 0.1f, 0.1f);
-//float lampRotX = 90.0f; float lampRotY = 90.0f; float lampRotZ = 0.0f; // Rotate Model in XYZ Coordinates
 
 
 // Katana Scaling Rotating and Positioning
@@ -197,23 +159,24 @@ float beastRotation = 0.0f;
 
 float beastX = 0.0f; float beastY = 0.0f; float beastZ = 100.0f;
 
+bool rotateDirectionalLight = true;
+bool renderModel = true;
 
+int selector = 1;
 
-
-// Directional light example (declared as a single instance)
+// Directional lighting
 float directLightTheta = 0.0f;
 DirectionalLight directLight = DirectionalLight(vec3(cosf(directLightTheta), sinf(directLightTheta), 0.0f));
 
 
 
 
-// Setup point light example light (use array to make adding other lights easier later)
-PointLight lights[2] = {
-	PointLight(vec3(0.0f, 1.0f, 0.0), vec3(1.0f, 0.0f, 0.0f), vec3(1.0f, 0.1f, 0.001f)),
-	PointLight(vec3(5.0f, 5.0f, 5.0), vec3(0.0f, 0.0f, 1.0f), vec3(1.0f, 0.1f, 0.001f))
+// Point Lights
+PointLight lights[1] = {
+	PointLight(vec3(0.0f, 1.0f, 0.0), vec3(0.0f, 0.0f, 1.0f), vec3(1.0f, 0.1f, 0.001f))
 };
 
-bool rotateDirectionalLight = true;
+
 
 
 // Multi Mesh Models
@@ -299,7 +262,7 @@ int main() {
 
 
 	// Initialise scene - geometry and shaders etc
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // setup background colour to be black
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // setup background colour to be black
 	glClearDepth(1.0f);
 
 	glPolygonMode(GL_FRONT, GL_FILL);
@@ -573,12 +536,29 @@ int main() {
 
 void renderScene()
 {
+	switch (selector) 
+	{
+	case 1:
+		renderNoTextureModels();
+		break;
 
-	//renderNoTextureModels();
-	//renderTexturedModels();
-	//renderTransparentModels();
-	renderWithMultipleLights();
-	
+	case 2:
+		renderTexturedModels();
+		break;
+
+	case 3:
+		renderWithMultipleLights();
+		break;
+
+	case 4:
+		renderTransparentModels();
+		break;
+	}
+
+	if (selector > 4)
+	{
+		selector = 1;
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -610,7 +590,6 @@ void renderNoTextureModels() {
 #pragma region Render opaque objects
 
 	// Plug-in texture-directional light shader and setup relevant uniform variables
-	// (keep this shader for all textured objects affected by the light source)
 	glUseProgram(texDirLightShader);
 
 	glUniformMatrix4fv(texDirLightShader_viewMatrix, 1, GL_FALSE, (GLfloat*)&cameraView);
@@ -630,8 +609,8 @@ void renderNoTextureModels() {
 	}
 
 	
-	//  *** normal mapping ***  Render the normal mapped column
-	// Plug in the normal map directional light shader
+	// Normal mapping
+	// Use the normal map directional light shader
 	glUseProgram(nMapDirLightShader);
 
 	// Setup uniforms
@@ -643,11 +622,10 @@ void renderNoTextureModels() {
 	glUniform3fv(nMapDirLightShader_lightColour, 1, (GLfloat*)&(directLight.colour));
 
 
-	// Render Terrain (follows same pattern / code structure as other objects)
 
-	int test = 1; //Remove Later
+	
 
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(terrainPos))
@@ -668,7 +646,7 @@ void renderNoTextureModels() {
 	
 
 	//Render katanaMesh
-	if (test == 1) {
+	if (renderModel == true) {
 		
 		mat4 modelTransform = glm::translate(identity<mat4>(), 
 			vec3(katanaPos)) 
@@ -691,7 +669,7 @@ void renderNoTextureModels() {
 	
 	//Render toriiMesh
 
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(toriiGatePos))
@@ -709,7 +687,7 @@ void renderNoTextureModels() {
 		}
 	}
 
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(toriiGatePos2))
@@ -727,7 +705,7 @@ void renderNoTextureModels() {
 		}
 	}
 
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(toriiGatePos3))
@@ -746,7 +724,7 @@ void renderNoTextureModels() {
 	}
 
 	//Render Pagoda Mesh
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(pagodaPos))
@@ -767,7 +745,7 @@ void renderNoTextureModels() {
 
 
 	//Render Lamp Mesh
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(lampPos))
@@ -785,7 +763,7 @@ void renderNoTextureModels() {
 		}
 	}
 
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(lampPos2))
@@ -887,12 +865,10 @@ void renderTexturedModels() {
 	glUniform3fv(nMapDirLightShader_lightDirection, 1, (GLfloat*)&(directLight.direction));
 	glUniform3fv(nMapDirLightShader_lightColour, 1, (GLfloat*)&(directLight.colour));
 
+	//Render Models And Textures
 
-	// Render Terrain (follows same pattern / code structure as other objects)
 
-	int test = 1; //Remove Later
-
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(terrainPos))
@@ -913,7 +889,7 @@ void renderTexturedModels() {
 
 
 	//Render katanaMesh
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(katanaPos))
@@ -936,7 +912,7 @@ void renderTexturedModels() {
 
 	//Render toriiMesh
 
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(toriiGatePos))
@@ -954,7 +930,7 @@ void renderTexturedModels() {
 		}
 	}
 
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(toriiGatePos2))
@@ -972,7 +948,7 @@ void renderTexturedModels() {
 		}
 	}
 
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(toriiGatePos3))
@@ -991,7 +967,7 @@ void renderTexturedModels() {
 	}
 
 	//Render Pagoda Mesh
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(pagodaPos))
@@ -1012,7 +988,7 @@ void renderTexturedModels() {
 
 
 	//Render Lamp Mesh
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(lampPos))
@@ -1030,7 +1006,7 @@ void renderTexturedModels() {
 		}
 	}
 
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(lampPos2))
@@ -1051,46 +1027,12 @@ void renderTexturedModels() {
 
 
 #pragma endregion
-
-
-#pragma region Render transparant objects
-
-	// Done with textured meshes - render transparent objects now (cylinder in this example)...
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	if (cylinderMesh) {
-
-		mat4 T = cameraProjection * cameraView * glm::translate(identity<mat4>(), cylinderPos);
-
-		cylinderMesh->setupTextures();
-		cylinderMesh->render(T);
-	}
-
-	//Testing Rendering a transparent Object Effect
-	if (test) {
-
-		mat4 T = cameraProjection * cameraView * glm::translate(identity<mat4>(), cylinderPos);
-
-		for (AIMesh* mesh : toriiModel)
-		{
-			mesh->setupTextures();
-			mesh->render();
-		}
-	}
-
-
-	glDisable(GL_BLEND);
-
-#pragma endregion
-
 
 	//
 	//render directional light source
 	//
 
-	// Restore fixed-function pipeline
+	// Restore fixed-function
 	glUseProgram(0);
 	glBindVertexArray(0);
 	glDisable(GL_TEXTURE_2D);
@@ -1111,278 +1053,15 @@ void renderTexturedModels() {
 
 	//////////////////////////////////////////////////////////////////
 	//                                                              //
-	//             Rendering Models With Transparency               //
-	//                                                              //
-	//////////////////////////////////////////////////////////////////
-
-//Demonstrate The Use of Transparency in Rendering
-
-
-void renderTransparentModels() {
-
-	// Clear the rendering window
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// Get camera matrices
-	mat4 cameraProjection = mainCamera->projectionTransform();
-	mat4 cameraView = mainCamera->viewTransform() * translate(identity<mat4>(), -beastPos);
-
-#pragma region Render opaque objects
-
-	// Plug-in texture-directional light shader and setup relevant uniform variables
-	// (keep this shader for all textured objects affected by the light source)
-	glUseProgram(texDirLightShader);
-
-	glUniformMatrix4fv(texDirLightShader_viewMatrix, 1, GL_FALSE, (GLfloat*)&cameraView);
-	glUniformMatrix4fv(texDirLightShader_projMatrix, 1, GL_FALSE, (GLfloat*)&cameraProjection);
-	glUniform1i(texDirLightShader_texture, 0); // set to point to texture unit 0 for AIMeshes
-	glUniform3fv(texDirLightShader_lightDirection, 1, (GLfloat*)&(directLight.direction));
-	glUniform3fv(texDirLightShader_lightColour, 1, (GLfloat*)&(directLight.colour));
-
-	if (creatureMesh) {
-
-		mat4 modelTransform = glm::translate(identity<mat4>(), beastPos) * eulerAngleY<float>(glm::radians<float>(beastRotation));
-
-		glUniformMatrix4fv(texDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
-
-		creatureMesh->setupTextures();
-		creatureMesh->render();
-	}
-
-
-	//  *** normal mapping ***  Render the normal mapped column
-	// Plug in the normal map directional light shader
-	glUseProgram(nMapDirLightShader);
-
-	// Setup uniforms
-	glUniformMatrix4fv(nMapDirLightShader_viewMatrix, 1, GL_FALSE, (GLfloat*)&cameraView);
-	glUniformMatrix4fv(nMapDirLightShader_projMatrix, 1, GL_FALSE, (GLfloat*)&cameraProjection);
-	glUniform1i(nMapDirLightShader_diffuseTexture, 0);
-	glUniform1i(nMapDirLightShader_normalMapTexture, 1);
-	glUniform3fv(nMapDirLightShader_lightDirection, 1, (GLfloat*)&(directLight.direction));
-	glUniform3fv(nMapDirLightShader_lightColour, 1, (GLfloat*)&(directLight.colour));
-
-
-#pragma region Render transparant objects
-
-	// Done with textured meshes - render transparent objects now (cylinder in this example)...
-	int test = 1;
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	if (cylinderMesh) {
-
-		mat4 T = cameraProjection * cameraView * glm::translate(identity<mat4>(), cylinderPos);
-
-		cylinderMesh->setupTextures();
-		cylinderMesh->render(T);
-	}
-
-	//Testing Rendering a transparent Object Effect
-	if (test == 1) {
-
-		mat4 T = cameraProjection * cameraView * glm::translate(identity<mat4>(), cylinderPos);
-
-		for (AIMesh* mesh : toriiModel)
-		{
-			mesh->setupTextures();
-			mesh->render();
-		}
-	}
-
-
-
-	if (test == 1) {
-
-		mat4 T = cameraProjection * cameraView * glm::translate(identity<mat4>(),
-			vec3(terrainPos))
-			* glm::scale(identity<mat4>(), vec3(terrainScale))
-			* eulerAngleZ<float>(glm::radians<float>(terrainRotZ))
-			* eulerAngleY<float>(glm::radians<float>(terrainRotY))
-			* eulerAngleX<float>(glm::radians<float>(terrainRotX));
-
-		//glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&T);
-
-		for (AIMesh* mesh : terrainModel)
-		{
-			mesh->setupTextures();
-			mesh->render();
-		}
-
-	}
-
-
-	//Render katanaMesh
-	if (test == 1) {
-
-		mat4 T = cameraProjection * cameraView * glm::translate(identity<mat4>(),
-			vec3(katanaPos))
-			* glm::scale(identity<mat4>(), vec3(katanaScale))
-			* eulerAngleZ<float>(glm::radians<float>(beastZ))
-			* eulerAngleY<float>(glm::radians<float>(beastY))
-			* eulerAngleX<float>(glm::radians<float>(beastX));
-
-
-		//mat4 modelTransform = glm::translate(identity<mat4>(), beastPos) * eulerAngleY<float>(glm::radians<float>(beastRotation));
-
-		//glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&T);
-
-		for (AIMesh* mesh : katanaModel)
-		{
-			mesh->setupTextures();
-			mesh->render();
-		}
-	}
-
-	//Render toriiMesh
-
-	if (test == 1) {
-
-		mat4 T = cameraProjection * cameraView * glm::translate(identity<mat4>(),
-			vec3(toriiGatePos))
-			* glm::scale(identity<mat4>(), vec3(toriiGateScale))
-			* eulerAngleZ<float>(glm::radians<float>(toriiGateRotZ))
-			* eulerAngleY<float>(glm::radians<float>(toriiGateRotY))
-			* eulerAngleX<float>(glm::radians<float>(toriiGateRotX));
-
-		//glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&T);
-
-		for (AIMesh* mesh : toriiModel)
-		{
-			mesh->setupTextures();
-			mesh->render();
-		}
-	}
-
-	if (test == 1) {
-
-		mat4 T = cameraProjection * cameraView * glm::translate(identity<mat4>(),
-			vec3(toriiGatePos2))
-			* glm::scale(identity<mat4>(), vec3(toriiGateScale))
-			* eulerAngleZ<float>(glm::radians<float>(toriiGateRotZ))
-			* eulerAngleY<float>(glm::radians<float>(toriiGateRotY))
-			* eulerAngleX<float>(glm::radians<float>(toriiGateRotX));
-
-		//glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&T);
-
-		for (AIMesh* mesh : toriiModel2)
-		{
-			mesh->setupTextures();
-			mesh->render();
-		}
-	}
-
-	if (test == 1) {
-
-		mat4 T = cameraProjection * cameraView * glm::translate(identity<mat4>(),
-			vec3(toriiGatePos3))
-			* glm::scale(identity<mat4>(), vec3(toriiGateScale))
-			* eulerAngleZ<float>(glm::radians<float>(toriiGateRotZ))
-			* eulerAngleY<float>(glm::radians<float>(toriiGateRotY))
-			* eulerAngleX<float>(glm::radians<float>(toriiGateRotX));
-
-		//glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&T);
-
-		for (AIMesh* mesh : toriiModel3)
-		{
-			mesh->setupTextures();
-			mesh->render();
-		}
-	}
-
-	//Render Pagoda Mesh
-	if (test == 1) {
-
-		mat4 T = cameraProjection * cameraView * glm::translate(identity<mat4>(),
-			vec3(pagodaPos))
-			* glm::scale(identity<mat4>(), vec3(pagodaScale))
-			* eulerAngleZ<float>(glm::radians<float>(pagodaRotZ))
-			* eulerAngleY<float>(glm::radians<float>(pagodaRotY))
-			* eulerAngleX<float>(glm::radians<float>(pagodaRotX));
-
-		//glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&T);
-
-		for (AIMesh* mesh : pagodaModel)
-		{
-			mesh->setupTextures();
-			mesh->render();
-		}
-	}
-
-
-
-	//Render Lamp Mesh
-	if (test == 1) {
-
-		mat4 T = cameraProjection * cameraView * glm::translate(identity<mat4>(),
-			vec3(lampPos))
-			* glm::scale(identity<mat4>(), vec3(lampScale))
-			* eulerAngleZ<float>(glm::radians<float>(lampRotZ))
-			* eulerAngleY<float>(glm::radians<float>(lampRotY))
-			* eulerAngleX<float>(glm::radians<float>(lampRotX));
-
-		//glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&T);
-
-		for (AIMesh* mesh : lampModel)
-		{
-			mesh->setupTextures();
-			mesh->render();
-		}
-	}
-
-	if (test == 1) {
-
-		mat4 T = cameraProjection * cameraView * glm::translate(identity<mat4>(),
-			vec3(lampPos2))
-			* glm::scale(identity<mat4>(), vec3(lampScale))
-			* eulerAngleZ<float>(glm::radians<float>(lampRotZ))
-			* eulerAngleY<float>(glm::radians<float>(lampRotY))
-			* eulerAngleX<float>(glm::radians<float>(lampRotX));
-
-		//glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&T);
-
-		for (AIMesh* mesh : lampModel2)
-		{
-			mesh->setupTextures();
-			mesh->render();
-		}
-	}
-	
-
-	glDisable(GL_BLEND);
-
-#pragma endregion
-
-	// Restore fixed-function pipeline
-	glUseProgram(0);
-	glBindVertexArray(0);
-	glDisable(GL_TEXTURE_2D);
-
-	mat4 cameraT = cameraProjection * cameraView;
-	glLoadMatrixf((GLfloat*)&cameraT);
-	glEnable(GL_POINT_SMOOTH);
-	glPointSize(10.0f);
-	glBegin(GL_POINTS);
-	glColor3f(directLight.colour.r, directLight.colour.g, directLight.colour.b);
-	glVertex3f(directLight.direction.x * 10.0f, directLight.direction.y * 10.0f, directLight.direction.z * 10.0f);
-	glEnd();
-}
-
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-	//////////////////////////////////////////////////////////////////
-	//                                                              //
-	//           Rendering With Multiple Light Sources              //
+	//    Rendering With Multiple Light Sources / Transparency       //
 	//                                                              //
 	//////////////////////////////////////////////////////////////////
 
 //Demonstrate The Use of Multiple Light Sources
 
 
-void renderWithMultipleLights() {
+void renderWithMultipleLights()
+{
 
 	// Clear the rendering window
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1402,6 +1081,8 @@ void renderWithMultipleLights() {
 	glUniform3fv(texDirLightShader_lightDirection, 1, (GLfloat*)&(directLight.direction));
 	glUniform3fv(texDirLightShader_lightColour, 1, (GLfloat*)&(directLight.colour));
 
+
+
 	if (creatureMesh) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(), beastPos) * eulerAngleY<float>(glm::radians<float>(beastRotation));
@@ -1412,9 +1093,9 @@ void renderWithMultipleLights() {
 		creatureMesh->render();
 	}
 
-	int test = 1;
 
-	if (test == 1) {
+
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(terrainPos))
@@ -1434,7 +1115,7 @@ void renderWithMultipleLights() {
 	}
 
 	//Render katanaMesh
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(katanaPos))
@@ -1456,7 +1137,7 @@ void renderWithMultipleLights() {
 
 	//Render toriiMesh
 
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(toriiGatePos))
@@ -1474,7 +1155,7 @@ void renderWithMultipleLights() {
 		}
 	}
 
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(toriiGatePos2))
@@ -1492,7 +1173,7 @@ void renderWithMultipleLights() {
 		}
 	}
 
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(toriiGatePos3))
@@ -1511,7 +1192,7 @@ void renderWithMultipleLights() {
 	}
 
 	//Render Pagoda Mesh
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(pagodaPos))
@@ -1532,7 +1213,7 @@ void renderWithMultipleLights() {
 
 
 	//Render Lamp Mesh
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(lampPos))
@@ -1550,7 +1231,7 @@ void renderWithMultipleLights() {
 		}
 	}
 
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(lampPos2))
@@ -1572,7 +1253,7 @@ void renderWithMultipleLights() {
 
 
 
-	// Enable additive blending for ***subsequent*** light sources!!!
+	// Enable additive blending for light sources
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE);
 
@@ -1603,7 +1284,7 @@ void renderWithMultipleLights() {
 
 
 
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(terrainPos))
@@ -1624,7 +1305,7 @@ void renderWithMultipleLights() {
 
 
 	//Render katanaMesh
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(katanaPos))
@@ -1632,9 +1313,6 @@ void renderWithMultipleLights() {
 			* eulerAngleZ<float>(glm::radians<float>(beastZ))
 			* eulerAngleY<float>(glm::radians<float>(beastY))
 			* eulerAngleX<float>(glm::radians<float>(beastX));
-
-
-		//mat4 modelTransform = glm::translate(identity<mat4>(), beastPos) * eulerAngleY<float>(glm::radians<float>(beastRotation));
 
 		glUniformMatrix4fv(texPointLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&modelTransform);
 
@@ -1647,7 +1325,7 @@ void renderWithMultipleLights() {
 
 	//Render toriiMesh
 
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(toriiGatePos))
@@ -1665,7 +1343,7 @@ void renderWithMultipleLights() {
 		}
 	}
 
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(toriiGatePos2))
@@ -1683,7 +1361,7 @@ void renderWithMultipleLights() {
 		}
 	}
 
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(toriiGatePos3))
@@ -1702,7 +1380,7 @@ void renderWithMultipleLights() {
 	}
 
 	//Render Pagoda Mesh
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(pagodaPos))
@@ -1723,7 +1401,7 @@ void renderWithMultipleLights() {
 
 
 	//Render Lamp Mesh
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(lampPos))
@@ -1741,7 +1419,7 @@ void renderWithMultipleLights() {
 		}
 	}
 
-	if (test == 1) {
+	if (renderModel == true) {
 
 		mat4 modelTransform = glm::translate(identity<mat4>(),
 			vec3(lampPos2))
@@ -1760,18 +1438,67 @@ void renderWithMultipleLights() {
 	}
 
 
-
-
-	///////////
-
-
-
-
 #pragma endregion
+
+
+	// Restore fixed-function
+	glUseProgram(0);
+	glBindVertexArray(0);
+	glDisable(GL_TEXTURE_2D);
+
+	mat4 cameraT = cameraProjection * cameraView;
+	glLoadMatrixf((GLfloat*)&cameraT);
+	glEnable(GL_POINT_SMOOTH);
+	glPointSize(10.0f);
+
+	glBegin(GL_POINTS);
+
+	glColor3f(directLight.colour.r, directLight.colour.g, directLight.colour.b);
+	glVertex3f(directLight.direction.x * 10.0f, directLight.direction.y * 10.0f, directLight.direction.z * 10.0f);
+
+
+	glColor3f(lights[0].colour.r, lights[0].colour.g, lights[0].colour.b);
+	glVertex3f(lights[0].pos.x, lights[0].pos.y, lights[0].pos.z);
+
+	glEnd();
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+	//////////////////////////////////////////////////////////////////
+	//                                                              //
+	//             Rendering Models With Transparency               //
+	//                                                              //
+	//////////////////////////////////////////////////////////////////
+
+//Demonstrate The Use of Transparency in Rendering
+
+
+void renderTransparentModels() {
+
+	// Clear the rendering window
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Get camera matrices
+	mat4 cameraProjection = mainCamera->projectionTransform();
+	mat4 cameraView = mainCamera->viewTransform() * translate(identity<mat4>(), -beastPos);
+
+
+
+	// Plug-in texture-directional light shader and setup relevant uniform variables
+	// (keep this shader for all textured objects affected by the light source)
+	glUseProgram(texDirLightShader);
+
+	glUniformMatrix4fv(texDirLightShader_viewMatrix, 1, GL_FALSE, (GLfloat*)&cameraView);
+	glUniformMatrix4fv(texDirLightShader_projMatrix, 1, GL_FALSE, (GLfloat*)&cameraProjection);
+
+
 
 
 #pragma region Render transparant objects
 
+	// Render Transparent Objects
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -1783,11 +1510,104 @@ void renderWithMultipleLights() {
 		cylinderMesh->render(T);
 	}
 
+
+
+
+
+	if (renderModel == true) {
+
+		mat4 T = cameraProjection * cameraView * glm::translate(identity<mat4>(),
+			vec3(terrainPos))
+			* glm::scale(identity<mat4>(), vec3(terrainScale))
+			* eulerAngleZ<float>(glm::radians<float>(terrainRotZ))
+			* eulerAngleY<float>(glm::radians<float>(terrainRotY))
+			* eulerAngleX<float>(glm::radians<float>(terrainRotX));
+
+		glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&T);
+
+		for (AIMesh* mesh : terrainModel)
+		{
+			mesh->setupTextures();
+			mesh->render();
+		}
+
+	}
+
+
+	//Render katanaMesh
+	if (renderModel == true) {
+
+		mat4 T = cameraProjection * cameraView * glm::translate(identity<mat4>(),
+			vec3(katanaPos))
+			* glm::scale(identity<mat4>(), vec3(katanaScale))
+			* eulerAngleZ<float>(glm::radians<float>(beastZ))
+			* eulerAngleY<float>(glm::radians<float>(beastY))
+			* eulerAngleX<float>(glm::radians<float>(beastX));
+
+	     glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&T);
+
+		for (AIMesh* mesh : katanaModel)
+		{
+			mesh->setupTextures();
+			mesh->render();
+		}
+	}
+
+	//Render toriiMesh
+
+	if (renderModel == true) {
+
+		mat4 T = cameraProjection * cameraView * glm::translate(identity<mat4>(),
+			vec3(toriiGatePos))
+			* glm::scale(identity<mat4>(), vec3(toriiGateScale))
+			* eulerAngleZ<float>(glm::radians<float>(toriiGateRotZ))
+			* eulerAngleY<float>(glm::radians<float>(toriiGateRotY))
+			* eulerAngleX<float>(glm::radians<float>(toriiGateRotX));
+
+		for (AIMesh* mesh : toriiModel)
+		{
+			mesh->setupTextures();
+			mesh->render();
+		}
+	}
+
+	if (renderModel == true) {
+
+		mat4 T = cameraProjection * cameraView * glm::translate(identity<mat4>(),
+			vec3(toriiGatePos2))
+			* glm::scale(identity<mat4>(), vec3(toriiGateScale))
+			* eulerAngleZ<float>(glm::radians<float>(toriiGateRotZ))
+			* eulerAngleY<float>(glm::radians<float>(toriiGateRotY))
+			* eulerAngleX<float>(glm::radians<float>(toriiGateRotX));
+
+		for (AIMesh* mesh : toriiModel2)
+		{
+			mesh->setupTextures();
+			mesh->render();
+		}
+	}
+
+	if (renderModel == true) {
+
+		mat4 T = cameraProjection * cameraView * glm::translate(identity<mat4>(),
+			vec3(toriiGatePos3))
+			* glm::scale(identity<mat4>(), vec3(toriiGateScale))
+			* eulerAngleZ<float>(glm::radians<float>(toriiGateRotZ))
+			* eulerAngleY<float>(glm::radians<float>(toriiGateRotY))
+			* eulerAngleX<float>(glm::radians<float>(toriiGateRotX));
+
+		for (AIMesh* mesh : toriiModel3)
+		{
+			mesh->setupTextures();
+			mesh->render();
+		}
+	}
+
 	glDisable(GL_BLEND);
 
 #pragma endregion
 
-	// Restore fixed-function
+	// Restore fixed-function pipeline
 	glUseProgram(0);
 	glBindVertexArray(0);
 	glDisable(GL_TEXTURE_2D);
@@ -1796,20 +1616,16 @@ void renderWithMultipleLights() {
 	glLoadMatrixf((GLfloat*)&cameraT);
 	glEnable(GL_POINT_SMOOTH);
 	glPointSize(10.0f);
-	
 	glBegin(GL_POINTS);
-
 	glColor3f(directLight.colour.r, directLight.colour.g, directLight.colour.b);
 	glVertex3f(directLight.direction.x * 10.0f, directLight.direction.y * 10.0f, directLight.direction.z * 10.0f);
-
-
-	
-
-	glColor3f(lights[0].colour.r, lights[0].colour.g, lights[0].colour.b);
-	glVertex3f(lights[0].pos.x, lights[0].pos.y, lights[0].pos.z);
-	
 	glEnd();
 }
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1817,11 +1633,7 @@ void renderWithMultipleLights() {
 
 
 
-
-
-
-
-// Animate elements
+//Animation
 void updateScene() {
 
 	float tDelta = 0.0f;
@@ -1921,6 +1733,10 @@ void keyboardHandler(GLFWwindow* window, int key, int scancode, int action, int 
 
 			case GLFW_KEY_SPACE:
 				rotateDirectionalLight = !rotateDirectionalLight;
+				break;
+
+			case GLFW_KEY_TAB:
+				selector++;
 				break;
 
 			default:
