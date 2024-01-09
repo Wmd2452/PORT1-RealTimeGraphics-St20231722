@@ -285,7 +285,8 @@ int main() {
 		characterMesh->addTexture(string("Assets\\human-character\\HumanModel_DiffuseMap.tif"), FIF_TIFF);
 	}
 
-	cylinderMesh = new Cylinder(string("Assets\\cylinder\\cylinderT.obj"));
+
+	cylinderMesh = new Cylinder(string("Assets\\pagoda-model\\PagodaModel.obj"));
 
 
 	// Load shaders
@@ -446,8 +447,8 @@ int main() {
 
 				cout << "Loading pagoda sub-mesh " << i << endl;
 				pagodaModel.push_back(new AIMesh(pagodaScene, i));
-				pagodaModel[i]->addTexture(string("Assets\\pagoda-model\\PagodaModel.mtl"), FIF_BMP);
-				pagodaModel[i]->addNormalMap(string("Assets\\pagoda-model\\PagodaModel.mtl"), FIF_BMP);
+				pagodaModel[i]->addTexture(string("Assets\\pagoda-model\\PagodaModel_DiffuseMap.tif"), FIF_TIFF);
+				pagodaModel[i]->addNormalMap(string("Assets\\pagoda-model\\PagodaModel_NormalMap.tif"), FIF_TIFF);
 			}
 		}
 	}
