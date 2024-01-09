@@ -202,7 +202,6 @@ vector<AIMesh*> lampModel2 = vector<AIMesh*>();
 void renderScene();
 void renderNoTextureModels();
 void renderTexturedModels();
-void renderTransparentModels();
 void renderWithMultipleLights();
 void updateScene();
 void resizeWindow(GLFWwindow* window, int width, int height);
@@ -553,13 +552,9 @@ void renderScene()
 	case 3:
 		renderWithMultipleLights();
 		break;
-
-	case 4:
-		renderTransparentModels();
-		break;
 	}
 
-	if (selector > 4)
+	if (selector > 3)
 	{
 		selector = 1;
 	}
@@ -1461,95 +1456,6 @@ void renderWithMultipleLights()
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-	//////////////////////////////////////////////////////////////////
-	//                                                              //
-	//             Rendering Models With Transparency               //
-	//                                                              //
-	//////////////////////////////////////////////////////////////////
-
-//Demonstrate The Use of Transparency in Rendering
-
-
-void renderTransparentModels() {
-
-	// Clear the rendering window
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// Get camera matrices
-	mat4 cameraProjection = mainCamera->projectionTransform();
-	mat4 cameraView = mainCamera->viewTransform() * translate(identity<mat4>(), -characterPos);
-
-
-
-	// Plug-in texture-directional light shader and setup relevant uniform variables
-	// (keep this shader for all textured objects affected by the light source)
-	glUseProgram(texDirLightShader);
-
-	glUniformMatrix4fv(texDirLightShader_viewMatrix, 1, GL_FALSE, (GLfloat*)&cameraView);
-	glUniformMatrix4fv(texDirLightShader_projMatrix, 1, GL_FALSE, (GLfloat*)&cameraProjection);
-
-
-
-
-#pragma region Render transparant Models
-
-	// Render Transparent Objects
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	if (cylinderMesh) {
-
-		mat4 T = cameraProjection * cameraView * glm::translate(identity<mat4>(), cylinderPos);
-
-		cylinderMesh->setupTextures();
-		cylinderMesh->render(T);
-	}
-
-
-
-	//Render cylinder
-	if (renderModel == true) {
-
-		mat4 T = cameraProjection * cameraView * glm::translate(identity<mat4>(),
-			vec3(cylinderPos))
-			* glm::scale(identity<mat4>(), vec3(pagodaScale))
-			* eulerAngleZ<float>(glm::radians<float>(characterZ))
-			* eulerAngleY<float>(glm::radians<float>(characterY))
-			* eulerAngleX<float>(glm::radians<float>(characterX));
-
-	     glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&T);
-
-		for (AIMesh* mesh : pagodaModel)
-		{
-			mesh->setupTextures();
-			mesh->render();
-		}
-	}
-
-	glDisable(GL_BLEND);
-
-#pragma endregion
-
-	// Restore fixed-function pipeline
-	glUseProgram(0);
-	glBindVertexArray(0);
-	glDisable(GL_TEXTURE_2D);
-
-	mat4 cameraT = cameraProjection * cameraView;
-	glLoadMatrixf((GLfloat*)&cameraT);
-	glEnable(GL_POINT_SMOOTH);
-	glPointSize(10.0f);
-	glBegin(GL_POINTS);
-	glColor3f(directLight.colour.r, directLight.colour.g, directLight.colour.b);
-	glVertex3f(directLight.direction.x * 10.0f, directLight.direction.y * 10.0f, directLight.direction.z * 10.0f);
-	glEnd();
-}
-
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
