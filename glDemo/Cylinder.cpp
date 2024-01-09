@@ -10,8 +10,8 @@ using namespace glm;
 Cylinder::Cylinder(std::string filename, GLuint meshIndex) : AIMesh(filename, meshIndex) {
 
 	// Load textures
-	wave1Texture = loadTexture("Assets\\cylinder\\waves1.png", FIF_PNG);
-	wave2Texture = loadTexture("Assets\\cylinder\\waves2.png", FIF_PNG);
+	wave1Texture = loadTexture("Assets\\cylinder\\sakura.jpg", FIF_JPEG);
+	wave2Texture = loadTexture("Assets\\cylinder\\sakura.jpg", FIF_JPEG);
 
 	// Load shader
 	shader = setupShaders(string("Assets\\cylinder\\cylinder.vert"), string("Assets\\cylinder\\cylinder.frag"));
