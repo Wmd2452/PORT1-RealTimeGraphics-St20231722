@@ -196,7 +196,9 @@ vector<AIMesh*> lampModel2 = vector<AIMesh*>();
 #pragma endregion
 
 
-// Function prototypes
+
+#pragma region Function Headers
+
 void renderScene();
 void renderNoTextureModels();
 void renderTexturedModels();
@@ -210,7 +212,7 @@ void mouseButtonHandler(GLFWwindow* window, int button, int action, int mods);
 void mouseScrollHandler(GLFWwindow* window, double xoffset, double yoffset);
 void mouseEnterHandler(GLFWwindow* window, int entered);
 
-
+#pragma endregion
 
 int main() {
 
@@ -262,7 +264,7 @@ int main() {
 
 
 	// Initialise scene - geometry and shaders etc
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // setup background colour to be black
+	glClearColor(0.0f, 0.0f, 0.0f, 0.5f); // setup background colour to be black
 	glClearDepth(1.0f);
 
 	glPolygonMode(GL_FRONT, GL_FILL);
@@ -286,7 +288,7 @@ int main() {
 	}
 
 
-	cylinderMesh = new Cylinder(string("Assets\\pagoda-model\\PagodaModel.obj"));
+	cylinderMesh = new Cylinder(string("Assets\\cylinder\\cylinderT.obj"));
 
 
 	// Load shaders
@@ -534,6 +536,7 @@ int main() {
 	//                                                              //
 	//////////////////////////////////////////////////////////////////
 
+//Change scene during execution by pressing the "TAB" key
 
 void renderScene()
 {
@@ -1490,7 +1493,7 @@ void renderTransparentModels() {
 
 
 
-#pragma region Render transparant objects
+#pragma region Render transparant Models
 
 	// Render Transparent Objects
 	glEnable(GL_BLEND);
@@ -1506,69 +1509,19 @@ void renderTransparentModels() {
 
 
 
-	//Render katanaMesh
+	//Render cylinder
 	if (renderModel == true) {
 
 		mat4 T = cameraProjection * cameraView * glm::translate(identity<mat4>(),
-			vec3(katanaPos))
-			* glm::scale(identity<mat4>(), vec3(katanaScale))
+			vec3(cylinderPos))
+			* glm::scale(identity<mat4>(), vec3(pagodaScale))
 			* eulerAngleZ<float>(glm::radians<float>(characterZ))
 			* eulerAngleY<float>(glm::radians<float>(characterY))
 			* eulerAngleX<float>(glm::radians<float>(characterX));
 
 	     glUniformMatrix4fv(nMapDirLightShader_modelMatrix, 1, GL_FALSE, (GLfloat*)&T);
 
-		for (AIMesh* mesh : katanaModel)
-		{
-			mesh->setupTextures();
-			mesh->render();
-		}
-	}
-
-	//Render toriiMesh
-
-	if (renderModel == true) {
-
-		mat4 T = cameraProjection * cameraView * glm::translate(identity<mat4>(),
-			vec3(toriiGatePos))
-			* glm::scale(identity<mat4>(), vec3(toriiGateScale))
-			* eulerAngleZ<float>(glm::radians<float>(toriiGateRotZ))
-			* eulerAngleY<float>(glm::radians<float>(toriiGateRotY))
-			* eulerAngleX<float>(glm::radians<float>(toriiGateRotX));
-
-		for (AIMesh* mesh : toriiModel)
-		{
-			mesh->setupTextures();
-			mesh->render();
-		}
-	}
-
-	if (renderModel == true) {
-
-		mat4 T = cameraProjection * cameraView * glm::translate(identity<mat4>(),
-			vec3(toriiGatePos2))
-			* glm::scale(identity<mat4>(), vec3(toriiGateScale))
-			* eulerAngleZ<float>(glm::radians<float>(toriiGateRotZ))
-			* eulerAngleY<float>(glm::radians<float>(toriiGateRotY))
-			* eulerAngleX<float>(glm::radians<float>(toriiGateRotX));
-
-		for (AIMesh* mesh : toriiModel2)
-		{
-			mesh->setupTextures();
-			mesh->render();
-		}
-	}
-
-	if (renderModel == true) {
-
-		mat4 T = cameraProjection * cameraView * glm::translate(identity<mat4>(),
-			vec3(toriiGatePos3))
-			* glm::scale(identity<mat4>(), vec3(toriiGateScale))
-			* eulerAngleZ<float>(glm::radians<float>(toriiGateRotZ))
-			* eulerAngleY<float>(glm::radians<float>(toriiGateRotY))
-			* eulerAngleX<float>(glm::radians<float>(toriiGateRotX));
-
-		for (AIMesh* mesh : toriiModel3)
+		for (AIMesh* mesh : pagodaModel)
 		{
 			mesh->setupTextures();
 			mesh->render();
